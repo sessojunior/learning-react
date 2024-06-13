@@ -1,0 +1,73 @@
+.app {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 30px;
+	width: 100%;
+}
+
+.container {
+	max-width: 1024px;
+}
+
+header {
+	padding: 30px;
+}
+
+header h1 {
+	text-align: center;
+}
+
+main {
+	width: 100%;
+	background-color: #eeee;
+	padding: 40px;
+	border-radius: 25px;
+}
+
+.cards h2 {
+	padding-bottom: 20px;
+}
+
+.card {
+	margin-bottom: 20px;
+}
+
+.card h3 {
+	padding: 20px 0 10px;
+	line-height: 1.25;
+}
+
+.card img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 10px;
+}
+
+.card p {
+	line-height: 1.25;
+}
+
+.card button {
+	margin: 10px 0 0;
+	box-sizing: border-box;
+	padding: 8px 16px;
+	background-color: #538ae4;
+	border: 0;
+	font-size: 15px;
+	color: #ffffff;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: all 0.5s;
+}
+
+.card button:hover {
+	background-color: #3f6cb5;
+}
+
+footer {
+	margin-top: 30px;
+	text-align: center;
+}
