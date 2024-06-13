@@ -1,20 +1,19 @@
-import { useState } from "react"
+import { useCallback, useEffect, useState, useMemo } from "react"
 
 export default function App() {
-  const [tarefas, setTarefas] = useState([
-    { id: 7, nome: "Lista 1" },
-    { id: 65, nome: "Lista 2" },
-    { id: 5, nome: "Lista 3" },
-  ])
+  const [tarefas, setTarefas] = useState(localStorage.getItem("tarefas") ? JSON.parse(localStorage.getItem("tarefas")) : [])
   const [input, setInput] = useState("")
-  const [totalTasks, setTotalTasks] = useState(tarefas.length)
+  const totalTasks = useMemo(() => tarefas.length, [tarefas])
 
-  const handleAddTask = () => {
+  useEffect(() => {
+    localStorage.setItem("tarefas", JSON.stringify(tarefas))
+  }, [tarefas])
+
+  const handleAddTask = useCallback(() => {
     const idTask = tarefas.reduce((acc, tarefa) => Math.max(acc, tarefa.id), 0) + 1
     console.log(idTask)
     setTarefas([...tarefas, { id: idTask, nome: input }])
-    setTotalTasks(tarefas.length + 1)
-  }
+  }, [tarefas, input])
 
   return (
     <>
@@ -23,11 +22,13 @@ export default function App() {
       <button type="button" onClick={handleAddTask}>Adicionar</button>
       <hr />
       <p>Total de tarefas: {totalTasks}</p>
-      <ul>
-        {tarefas.map((tarefa) => (
-          <li key={tarefa.id}>{tarefa.nome}</li>
-        ))}
-      </ul>
+      {totalTasks > 0 &&
+        <ul>
+          {tarefas.map((tarefa) => (
+            <li key={tarefa.id}>{tarefa.nome}</li>
+          ))}
+        </ul>
+      }
     </>
   )
 }
