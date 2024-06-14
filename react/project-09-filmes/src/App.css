@@ -1,0 +1,44 @@
+.app {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	background-color: #eeeeee;
+}
+
+header {
+	padding: 20px 40px;
+	width: 100%;
+	background-color: #dddddd;
+}
+
+main {
+	padding: 40px;
+}
+
+footer {
+	padding: 20px 40px;
+	width: 100%;
+	background-color: #dddddd;
+}
+
+.container {
+	width: 100%;
+}
+
+.filmes {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	margin: 0 -10px;
+}
+
+.filmes article {
+	width: 20%;
+	padding: 10px;
+}
+
+.filmes article img {
+	width: 100%;
+	height: auto;
+}
