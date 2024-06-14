@@ -13,6 +13,7 @@ header {
 }
 
 main {
+	width: 100%;
 	padding: 40px;
 }
 
@@ -41,4 +42,58 @@ footer {
 .filmes article img {
 	width: 100%;
 	height: auto;
+}
+
+.filmes article button {
+	margin-top: 10px;
+	padding: 8px 16px;
+	border-radius: 4px;
+	border: transparent;
+	background-color: #000;
+	color: #fff;
+	cursor: pointer;
+}
+
+.filmes article button:hover {
+	opacity: 0.75;
+}
+
+.msg {
+	display: block;
+	padding: 20px;
+	color: #ff0000;
+	background-color: #dddddd;
+	margin-bottom: 20px;
+	border-radius: 10px;
+}
+
+.favoritos {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	margin: 0 -10px;
+}
+
+.favoritos article {
+	width: 20%;
+	padding: 10px;
+}
+
+.favoritos article img {
+	width: 100%;
+	height: auto;
+}
+
+.favoritos article button {
+	margin-top: 10px;
+	padding: 8px 16px;
+	border-radius: 4px;
+	border: transparent;
+	background-color: #000;
+	color: #fff;
+	cursor: pointer;
+}
+
+.favoritos article button:hover {
+	opacity: 0.75;
 }

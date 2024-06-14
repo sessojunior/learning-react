@@ -11,7 +11,7 @@ function App() {
           'country=us&' +
           'pageSize=25&' +
           'page=1&' +
-          'apiKey=';
+          'apiKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
         fetch(url).then((response) => response.json())
           .then((data) => {
             console.log(data.articles)
