@@ -1,2 +1,3 @@
-# learning
-Projetos de aprendizagem
+# Aprendendo React
+
+Projetos de aprendizagem de React

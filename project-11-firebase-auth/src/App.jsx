@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 // import { getDocs } from "firebase/firestore";
 import { collection, addDoc, doc, getDoc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
-import { db } from "./firebaseConnection";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import { db, auth } from "./firebaseConnection";
 import './App.css'
 
 function App() {
@@ -17,6 +18,16 @@ function App() {
     autor: "",
     data: "",
   })
+  const [formAddUser, setFormAddUser] = useState({
+    email: "",
+    senha: "",
+  })
+  const [formLogin, setFormLogin] = useState({
+    email: "",
+    senha: "",
+  })
+  const [isLogged, setIsLogged] = useState(false)
+  const [user, setUser] = useState({})
 
   function formatDate(date) {
     // YYYY-MM-DD HH:MM:SS
@@ -49,6 +60,62 @@ function App() {
         setErrorMessage("Erro ao cadastrar o documento: " + error)
         console.error("Erro ao cadastrar o documento:", error)
       }
+    }
+  }
+
+  async function addUser(event) {
+    event.preventDefault()
+    try {
+      const data = await createUserWithEmailAndPassword(auth, formLogin.email, formLogin.senha)
+      console.log("Cadastrado com sucesso")
+      console.log(data.user.uid)
+    } catch (error) {
+      console.log("Erro ao cadastrar usuário")
+      if (error.code === "auth/invalid-email") {
+        alert("E-mail inválido")
+      } else if (error.code === "auth/weak-password") {
+        alert("Senha fraca")
+      } else if (error.code === "auth/email-already-in-use") {
+        alert("E-mail já cadastrado")
+      }
+      console.log(error)
+    }
+  }
+
+  async function login(event) {
+    event.preventDefault()
+    try {
+      const data = await signInWithEmailAndPassword(auth, formLogin.email, formLogin.senha)
+      console.log("Usuário fez login com sucesso")
+      console.log(data.user.uid)
+      setIsLogged(true)
+      setUser({
+        uid: data.user.uid,
+        email: data.user.email
+      })
+    } catch (error) {
+      console.log("Erro ao logar")
+      if (error.code === "auth/invalid-email") {
+        alert("E-mail inválido")
+      } else if (error.code === "auth/user-not-found") {
+        alert("E-mail não encontrado")
+      } else if (error.code === "auth/wrong-password") {
+        alert("Senha inválida")
+      }
+      console.log(error)
+    }
+  }
+
+  async function logout() {
+    try {
+      await signOut(auth)
+      setIsLogged(false)
+      setUser({
+        uid: "",
+        email: ""
+      })
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -116,11 +183,30 @@ function App() {
           docs.push({ ...doc.data(), id: doc.id })
         })
         setPosts(docs)
-        console.log(docs)
+        //console.log(docs)
       });
     } catch (error) {
       console.log(error)
     }
+  }
+
+  async function checkLogin() {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log(user)
+        setIsLogged(true)
+        setUser({
+          uid: user.uid,
+          email: user.email
+        })
+      } else {
+        setIsLogged(false)
+        setUser({
+          uid: "",
+          email: ""
+        })
+      }
+    })
   }
 
   function confirmDelete(id, titulo) {
@@ -132,31 +218,98 @@ function App() {
   useEffect(() => {
     loadPosts()
   }, [])
+  
+  useEffect(() => {
+    checkLogin()
+  }, [])
+
+  const changeFormLogin = (e) => { 
+    setFormLogin({ ...formLogin, [e.target.name]: e.target.value })
+    //console.log(formLogin)
+  }
+  
+  const changeFormAddUser = (e) => { 
+    setFormAddUser({ ...formAddUser, [e.target.name]: e.target.value })
+    //console.log(formAddUser)
+  }
 
   const changeFormAdd = (e) => { 
     setFormAdd({ ...formAdd, [e.target.name]: e.target.value })
-    console.log(formAdd)
+    //console.log(formAdd)
   }
   
   const changeFormUpdate = (e) => { 
     setFormUpdate({ ...formUpdate, [e.target.name]: e.target.value })
-    console.log(formUpdate)
+    //console.log(formUpdate)
   }
 
   return (
     <>
       <h1>Projeto utilizando o Firebase</h1>
       <br />
+      
       <div className="container">
+        <h2>Login de usuário</h2>
+        {isLogged && (
+          <div>
+            <div>Seja bem-vindo! Você está logado.</div>
+            <div>Uid: {user.uid} - E-mail: {user.email}</div>
+            <button onClick={logout}>Fazer logout</button>
+          </div>
+        )}
+        {!isLogged && (
+          <form onSubmit={login}>
+            <div>
+              <label htmlFor="email">Email:</label>
+              <input type="text" name="email" id="email" autoComplete="email" placeholder="Digite o email" value={formLogin.email} onChange={changeFormLogin} required />
+            </div>
+            <div>
+              <label htmlFor="senha">Senha:</label>
+              <input type="password" name="senha" id="senha" autoComplete="current-password" placeholder="Digite a senha" value={formLogin.senha} onChange={changeFormLogin} required />
+            </div>
+            <div>
+              <button type="submit">Login</button>
+            </div>
+          </form>
+        )}
+      </div>
+
+      <br />
+      <hr />
+      <br />
+
+      <div className="container">
+        <h2>Cadastrar usuário</h2>
+        <form onSubmit={addUser}>
+          <div>
+            <label htmlFor="add-email">Email:</label>
+            <input type="text" name="email" id="add-email" autoComplete="email" placeholder="Digite o email" value={formAddUser.email} onChange={changeFormAddUser} required />
+          </div>
+          <div>
+            <label htmlFor="add-senha">Senha:</label>
+            <input type="password" name="senha" id="add-senha" autoComplete="current-password" placeholder="Digite a senha" value={formAddUser.senha} onChange={changeFormAddUser} required />
+          </div>
+          <div>
+            <button type="submit">Cadastrar</button>
+          </div>
+        </form>
+      </div>
+
+      <br />
+      <hr />
+      <br />
+
+      <div className="container">
+        <h2>Cadastrar Post</h2>
         <form onSubmit={addPost}>
           {error && <p style={{ color: "red" }}>{errorMessage}</p>}
           <div>
-            <label htmlFor="titulo">Titulo:</label>
-            <input type="text" name="titulo" id="titulo" placeholder="Digite o título" value={formAdd.titulo} onChange={changeFormAdd} required />
+            <label htmlFor="add-titulo">Titulo:</label>
+            <input type="text" name="titulo" id="add-titulo" placeholder="Digite o título" value={formAdd.titulo} onChange={changeFormAdd} required />
           </div>
           <div>
-            <label htmlFor="autor">Autor:</label>
-            <input type="text" name="autor" id="autor" placeholder="Digite o autor" value={formAdd.autor} onChange={changeFormAdd} required />
+            <label htmlFor="add-autor">Autor:</label>
+            <input type="text" name="autor" id="add-autor" placeholder="Digite o autor" value={formAdd.autor} onChange={changeFormAdd} required />
           </div>
           <div>
             <button type="submit">Cadastrar</button>
@@ -177,6 +330,8 @@ function App() {
         ))}
         </ul>
         <br />
+        <hr />
+        <br />
         <h2>Obtendo dados de um post</h2>
         <br />
         {formUpdate && (
@@ -184,21 +339,22 @@ function App() {
             <form onSubmit={(event) => updatePost(event, formUpdate.id)}>
               {error && <p style={{ color: "red" }}>{errorMessage}</p>}
               <div>
-                <label htmlFor="titulo">Titulo:</label>
-                <input type="text" name="titulo" id="titulo" placeholder="Digite o título" value={formUpdate.titulo} onChange={changeFormUpdate} required />
+                <label htmlFor="update-titulo">Titulo:</label>
+                <input type="text" name="titulo" id="update-titulo" placeholder="Digite o título" value={formUpdate.titulo} onChange={changeFormUpdate} required />
               </div>
               <div>
-                <label htmlFor="autor">Autor:</label>
-                <input type="text" name="autor" id="autor" placeholder="Digite o autor" value={formUpdate.autor} onChange={changeFormUpdate} required />
+                <label htmlFor="update-autor">Autor:</label>
+                <input type="text" name="autor" id="update-autor" placeholder="Digite o autor" value={formUpdate.autor} onChange={changeFormUpdate} required />
               </div>
               <div>
-                <label htmlFor="data">Data:</label>
-                <input type="text" name="data" id="data" placeholder="Digite a data" value={formUpdate.data} onChange={changeFormUpdate} required />
+                <label htmlFor="update-data">Data:</label>
+                <input type="text" name="data" id="update-data" placeholder="Digite a data" value={formUpdate.data} onChange={changeFormUpdate} required />
               </div>
               <div>
                 <button type="submit">Alterar dados</button> - <button type="button" onClick={() => confirmDelete(formUpdate.id, formUpdate.titulo)}>Excluir</button>
                 </div>
             </form>
+            <br />
           </div>
         )}
       </div>
