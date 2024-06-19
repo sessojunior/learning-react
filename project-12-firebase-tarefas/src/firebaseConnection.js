@@ -6,7 +6,7 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-	apiKey: "AIzaSyBnBRACbdSftud3Dm6ABtKmf8m6s_ps3Rk",
+	apiKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 	authDomain: "cursoreact-sessojunior.firebaseapp.com",
 	projectId: "cursoreact-sessojunior",
 	storageBucket: "cursoreact-sessojunior.appspot.com",
