@@ -1,0 +1,34 @@
+.admin {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100vh;
+	justify-content: start;
+	align-items: center;
+	background-color: #dddddd;
+	padding: 20px;
+}
+
+.admin .list {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	padding: 15px;
+	width: 100%;
+	background-color: #eeeeee;
+	border-radius: 4px;
+	margin-bottom: 20px;
+}
+
+.admin .task {
+	padding: 15px;
+	background-color: #cccccc;
+	border-radius: 4px;
+}
+
+.admin .list button {
+	margin: 0;
+	width: auto;
+	padding: 4px 8px;
+	font-size: 14px;
+}
