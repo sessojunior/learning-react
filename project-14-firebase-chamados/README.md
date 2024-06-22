@@ -1,0 +1,3 @@
+# Projeto de chamados
+
+Projeto de chamados usando Firebase, com autenticação, rotas, react toastify, react icons, etc ...

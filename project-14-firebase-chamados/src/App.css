@@ -1,0 +1,182 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: sans-serif;
+}
+
+.login {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+}
+
+.login .box {
+	display: flex;
+	flex-direction: column;
+	padding: 20px;
+	margin: 20px;
+	border: 1px solid #e9e9e9;
+	background-color: #fafafa;
+	border-radius: 8px;
+	width: 100%;
+	max-width: 360px;
+}
+
+.login .header {
+	text-align: center;
+	padding: 0 0 20px;
+}
+
+.login .header img.logo {
+	height: 60px;
+}
+
+.login .header h1 {
+	font-size: 28px;
+}
+
+.login .body p {
+	padding-bottom: 10px;
+}
+
+.login form input {
+	padding: 8px 10px 7px;
+	margin-bottom: 8px;
+	width: 100%;
+	font-size: 16px;
+	border-radius: 4px;
+	border: 1px solid #e9e9e9;
+	outline: 0;
+}
+
+.login form button {
+	padding: 8px 16px;
+	font-size: 16px;
+	border: 1px solid #e9e9e9;
+	cursor: pointer;
+	border-radius: 4px;
+}
+
+.login form button:hover {
+	border-color: #ccc;
+	background-color: #ccc;
+}
+
+.dashboard {
+	display: flex;
+}
+
+.dashboard .content {
+	width: 100%;
+	padding: 20px;
+}
+
+.dashboard .box {
+	background-color: #fafafa;
+	border: 1px solid #e9e9e9;
+	border-radius: 4px;
+	padding: 20px;
+}
+
+.dashboard .box .avatar {
+	padding-bottom: 20px;
+	position: relative;
+	width: 120px;
+}
+
+.dashboard .box .avatar img {
+	width: 120px;
+	height: 120px;
+	display: block;
+	opacity: 0.5;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.dashboard .box .avatar input {
+	display: none;
+}
+
+.dashboard .box .avatar label {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 120px;
+	height: 120px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.dashboard .box .avatar svg {
+	filter: drop-shadow(2px 3px 6px #999);
+	-webkit-filter: drop-shadow(2px 3px 6px #999);
+}
+
+.dashboard form label {
+	display: inline-block;
+	padding: 0 15px 2px 0;
+}
+
+.dashboard form input {
+	padding: 8px 10px 7px;
+	margin-bottom: 8px;
+	width: 100%;
+	font-size: 16px;
+	border-radius: 4px;
+	border: 1px solid #e9e9e9;
+	outline: 0;
+}
+
+.dashboard form button {
+	padding: 8px 16px;
+	font-size: 16px;
+	border: 1px solid #e9e9e9;
+	cursor: pointer;
+	border-radius: 4px;
+}
+
+.dashboard form button:hover {
+	border-color: #ccc;
+	background-color: #ccc;
+}
+
+.dashboard form select {
+	padding: 8px 10px 7px;
+	margin-bottom: 8px;
+	width: 100%;
+	font-size: 16px;
+	border-radius: 4px;
+	border: 1px solid #e9e9e9;
+	outline: 0;
+}
+
+.dashboard form textarea {
+	padding: 8px 10px 7px;
+	width: 100%;
+	font-size: 16px;
+	border-radius: 4px;
+	border: 1px solid #e9e9e9;
+	outline: 0;
+	resize: none;
+}
+
+.dashboard form .input-radios {
+	padding-bottom: 4px;
+}
+
+.dashboard form input[type="radio"] {
+	display: inline-block;
+	padding: 8px 10px 7px;
+	margin-bottom: 0;
+	width: auto;
+	font-size: 16px;
+	border-radius: 4px;
+	border: 1px solid #e9e9e9;
+	outline: 0;
+}
