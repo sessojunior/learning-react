@@ -1,11 +1,12 @@
 import Sidebar from "../../components/Sidebar"
 import Topbar from "../../components/Topbar"
+import Modal from "../../components/Modal"
 import { FiHome, FiEdit2, FiSearch } from "react-icons/fi"
 import "./table.css"
 
 import { Link } from "react-router-dom"
 import { useContext, useEffect, useState } from "react"
-import { collection, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore"
+import { collection, doc, getDoc, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore"
 import { db } from "../../services/firebaseConnection"
 import { AuthContext } from "../../contexts/AuthContext"
 
@@ -19,6 +20,9 @@ export default function Dashboard() {
   const [loadingMore, setLoadingMore] = useState(false)
   const [isEmpty, setIsEmpty] = useState(false)
   const limitItems = 5
+
+  const [showModal, setShowModal] = useState(false)
+  const [modalDetails, setModalDetails] = useState({})
 
   async function querySnapshot(query) {
     await getDocs(query)
@@ -48,6 +52,15 @@ export default function Dashboard() {
         setLoading(false)
       })
   }
+
+  async function handleOpenModal(id) {
+    await getDoc(doc(db, "tickets", id)).then((doc) => {
+      setModalDetails(doc.data())
+      setShowModal(true)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
   
   async function handleLoadMore() {
     setLoadingMore(true)
@@ -66,71 +79,74 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div className="dashboard">
-      <Sidebar />
-      <div className="content">
-        <Topbar title="Chamados"><FiHome size={24} color="#666" /></Topbar>
-        <div className="header">
-          <Link to="/new">Novo chamado</Link>
-        </div>
-        {loading ? (
-          <div>
-            <p>Carregando...</p>
+    <>
+      <div className="dashboard">
+        <Sidebar />
+        <div className="content">
+          <Topbar title="Chamados"><FiHome size={24} color="#666" /></Topbar>
+          <div className="header">
+            <Link to="/new">Novo chamado</Link>
           </div>
-        ) : (
-          tickets.length === 0 ? (
+          {loading ? (
             <div>
-              <p>Não há chamados...</p>
+              <p>Carregando...</p>
             </div>
           ) : (
-            <div className="table">
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Cliente</th>
-                    <th scope="col">Assunto</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Data de cadastro</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tickets.map((item) => (
-                    <tr key={item.id}>
-                      <td data-label="Cliente">{item.customer}</td>
-                      <td data-label="Assunto">{item.subject}</td>
-                      <td data-label="Status">
-                        <span className={
-                          (item.status === "Aberto"
-                            ? "badge red"
-                            : (item.status === "Progresso")
-                              ? "badge green"
-                              : "badge"
-                          )}>{item.status}</span>
-                      </td>
-                      <td data-label="Cadastrando">{item.createdFormated}</td>
-                      <td data-label="">
-                        <div className="buttons">
-                          <button className="blue">
-                            <FiSearch size={18} color="#fff" />
-                          </button>
-                          <Link to={`/new/${item.id}`} className="orange">
-                            <FiEdit2 size={18} color="#fff" />
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="load-more">
-                {loadingMore && <p>Carregando mais chamados...</p>}
-                {!loadingMore && !isEmpty && <button onClick={handleLoadMore}>Carregar mais chamados</button>}
+            tickets.length === 0 ? (
+              <div>
+                <p>Não há chamados...</p>
               </div>
-            </div>
-          )
-        )}
+            ) : (
+              <div className="table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Cliente</th>
+                      <th scope="col">Assunto</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Data de cadastro</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tickets.map((item) => (
+                      <tr key={item.id}>
+                        <td data-label="Cliente">{item.customer}</td>
+                        <td data-label="Assunto">{item.subject}</td>
+                        <td data-label="Status">
+                          <span className={
+                            (item.status === "Aberto"
+                              ? "badge red"
+                              : (item.status === "Progresso")
+                                ? "badge green"
+                                : "badge"
+                            )}>{item.status}</span>
+                        </td>
+                        <td data-label="Cadastrando">{item.createdFormated}</td>
+                        <td data-label="">
+                          <div className="buttons">
+                            <button className="blue" onClick={() => handleOpenModal(item.id)}>
+                              <FiSearch size={18} color="#fff" />
+                            </button>
+                            <Link to={`/new/${item.id}`} className="orange">
+                              <FiEdit2 size={18} color="#fff" />
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="load-more">
+                  {loadingMore && <p>Carregando mais chamados...</p>}
+                  {!loadingMore && !isEmpty && <button onClick={handleLoadMore}>Carregar mais chamados</button>}
+                </div>
+              </div>
+            )
+          )}
+        </div>
+        {showModal && <Modal details={modalDetails} setShowModal={setShowModal} />}
       </div>
-    </div>
+    </>
   )
 }

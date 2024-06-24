@@ -1,0 +1,90 @@
+.modal {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.6);
+	z-index: 99;
+}
+
+.modal .container {
+	position: fixed;
+	max-width: 600px;
+	min-height: 400px;
+	top: 15%;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #ffffff;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+	border-radius: 4px;
+}
+
+.modal .close {
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	background-color: #f65835;
+	border: 0;
+	border-radius: 5px;
+	display: flex;
+	justify-content: venter;
+	align-items: center;
+	padding: 4px 12px 4px 8px;
+	color: #fff;
+	margin-bottom: 15px;
+	cursor: pointer;
+}
+
+.modal .close:hover {
+	opacity: 0.9;
+}
+
+.modal .close span {
+	margin-left: 4px;
+}
+
+.modal h2 {
+	margin: 5px 0 20px;
+}
+
+.modal span {
+	font-weight: bold;
+}
+
+.modal span i {
+	font-weight: normal;
+	margin-right: 8px;
+}
+
+.modal span.status {
+	background-color: gray;
+	padding: 4px 8px;
+	color: #fff;
+	font-weight: normal;
+	border-radius: 4px;
+}
+
+.modal span.status.green {
+	background-color: green;
+}
+
+.modal span.status.red {
+	background-color: red;
+}
+
+.modal span.status.gray {
+	background-color: gray;
+}
+
+.modal .row {
+	display: flex;
+	gap: 20px;
+	margin-bottom: 15px;
+}
+
+.modal .row p {
+	line-height: 1.5;
+}
