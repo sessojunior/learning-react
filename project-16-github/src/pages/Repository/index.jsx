@@ -4,13 +4,15 @@ import api from "../../services/api"
 
 import { useState, useEffect, useCallback } from "react"
 
-import { Container, Owner, IssuesList, Loading, BackButton, PageActions } from "./styles"
+import { Container, Owner, IssuesList, Loading, BackButton, PageActions, ActionButton } from "./styles"
 
 export default function Repository() {
   const { repository: repositoryParams } = useParams()
   const [loading, setLoading] = useState(true)
   const [repository, setRepository] = useState({})
   const [issues, setIssues] = useState([])
+  const initialState = "open"
+  const [state, setState] = useState(initialState)
 
   const [page, setPage] = useState(1)
 
@@ -21,7 +23,7 @@ export default function Repository() {
           api.get(`repos/${repositoryParams}`),
           api.get(`repos/${repositoryParams}/issues`, {
             params: {
-              state: "open",
+              state: initialState,
               per_page: 5,
             },
           }),
@@ -45,9 +47,9 @@ export default function Repository() {
       try {
         const issuesData = await api.get(`repos/${repositoryParams}/issues`, {
           params: {
-            state: "open",
+            state,
             per_page: 5,
-            page: page,
+            page,
           },
         })
         console.log("issuesData", issuesData)
@@ -60,7 +62,7 @@ export default function Repository() {
       }
     }
     loadData()
-  }, [repositoryParams, page])
+  }, [repositoryParams, page, state])
 
   // console.log("repository", repository)
   // console.log("issues", issues)
@@ -75,6 +77,11 @@ export default function Repository() {
     }
   }, [page])
 
+  const handleState = useCallback((state) => {
+    console.log(state)
+    setState(state)
+  }, [])
+
   if (loading === true) {
     return (
       <Loading>
@@ -86,17 +93,20 @@ export default function Repository() {
   return (
     <div>
       <Container>
-        <h1>{repositoryParams}</h1>
+        <p>
+          <BackButton to="/"><FaArrowLeft /> Voltar</BackButton>
+        </p>
         {repository.owner && <>
           <Owner>
             <img src={repository.owner.avatar_url} alt={repository.owner.login} />
             <h2>{repository.owner.login}</h2>
           </Owner>
+          <h1>{repositoryParams}</h1>
           <p>{repository.description}</p>
         </>}
-        <p>
-          <BackButton to="/"><FaArrowLeft /> Voltar</BackButton>
-        </p>
+        <ActionButton onClick={() => handleState('all')} disabled={state === "all"}>Todas</ActionButton>
+        <ActionButton onClick={() => handleState('closed')} disabled={state === "closed"}>Fechadas</ActionButton>
+        <ActionButton onClick={() => handleState('open')} disabled={state === "open"}>Abertas</ActionButton>
         {issues && <>
           <IssuesList>
             {issues.map((issue) => (

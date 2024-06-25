@@ -114,7 +114,7 @@ export const IssuesList = styled.ul`
 `
 
 export const BackButton = styled(Link)`
-  margin-top: 20px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -149,5 +149,20 @@ export const PageActions = styled.div`
       cursor: not-allowed;
       opacity: 0.5;
     }
+  }
+`
+
+export const ActionButton = styled.button`
+  outline: 0;
+  border: 0;
+  background: #cfc3f8;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  margin: 10px 10px 0 0;
+
+  &:disabled {
+    cursor: not-allowed;
+    background: #7c65c9;
   }
 `
