@@ -1,0 +1,31 @@
+* {
+	font-family: sans-serif;
+}
+
+.app {
+	margin: 20px;
+}
+
+.task-list {
+	list-style-type: none;
+	padding: 0;
+}
+
+.task-list li {
+	padding-bottom: 20px;
+}
+
+.task-list button {
+	padding: 4px 8px;
+	cursor: pointer;
+}
+
+.task-add-btn {
+	padding: 4px 8px;
+	cursor: pointer;
+}
+
+.task-input {
+	padding: 4px 8px;
+	margin-right: 8px;
+}
