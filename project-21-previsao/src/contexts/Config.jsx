@@ -7,6 +7,7 @@ export default function ConfigProvider({ children }) {
 
   const [config, setConfig] = useState({
     showHeaderFooter: true,
+    quantityFrames: 4,
   })
 
   return (

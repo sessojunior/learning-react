@@ -2,60 +2,126 @@ import Frame from "./Frame"
 
 export default function Frames() {
 
+  const models = [
+    {
+      id: 1,
+      name: "BAM",
+      defaultValues: {
+        region: "Sul",
+        options: "Níveis isobáricos A",
+        field: "Campo 3A",
+        init: "Qua 05 Jun 2024 18 UTC",
+        currentTime: "096",
+      },
+      possibleValues: {
+        region: ["Norte", "Sul", "Centro-Oeste", "Nordeste", "Sudeste"],
+        options: ["Níveis isobáricos A", "Níveis simples A", "Conjuntos A"],
+        field: ["Campo 3A", "Campo 4A", "Campo 7A"],
+        init: ["Qua 05 Jun 2024 00 UTC", "Qua 05 Jun 2024 06 UTC", "Qua 05 Jun 2024 12 UTC", "Qua 05 Jun 2024 18 UTC"],
+        time: ["024", "030", "036", "040", "048", "060", "072", "084", "096"],
+      },
+    },
+    {
+      id: 2,
+      name: "WRF",
+      defaultValues: {
+        region: "Sul",
+        options: "Níveis simples B",
+        field: "Campo 4B",
+        init: "Qua 05 Jun 2024 06 UTC",
+        currentTime: "024",
+      },
+      possibleValues: {
+        region: ["Sul", "Centro-Oeste", "Nordeste"],
+        options: ["Níveis isobáricos B", "Níveis simples B", "Conjuntos B"],
+        field: ["Campo 3B", "Campo 4B", "Campo 7B"],
+        init: ["Qua 05 Jun 2024 00 UTC", "Qua 05 Jun 2024 06 UTC", "Qua 05 Jun 2024 12 UTC", "Qua 05 Jun 2024 18 UTC"],
+        time: ["024", "030", "036", "040", "048", "060", "072", "084", "096", "108", "120", "132", "144", "156", "168", "180", "192", "204", "216", "228", "240"],
+      },
+    },
+    {
+      id: 3,
+      name: "BRAMS",
+      defaultValues: {
+        region: "América do Sul",
+        options: "Conjuntos C",
+        field: "Campo 7C",
+        init: "Qua 05 Jun 2024 12 UTC",
+        currentTime: "036",
+      },
+      possibleValues: {
+        region: ["América do Sul", "Brasil"],
+        options: ["Níveis isobáricos C", "Níveis simples C", "Conjuntos C"],
+        field: ["Campo 3C", "Campo 4C", "Campo 7C"],
+        init: ["Qua 05 Jun 2024 00 UTC", "Qua 05 Jun 2024 06 UTC", "Qua 05 Jun 2024 12 UTC", "Qua 05 Jun 2024 18 UTC"],
+        time: ["030", "036", "040", "048", "060", "072", "084", "096", "108", "120", "132", "144", "156", "168", "180"],
+      },
+    },
+    {
+      id: 4,
+      name: "Outros",
+      defaultValues: {
+        region: "Sul",
+        options: "Níveis isobáricos D",
+        field: "Campo 3D",
+        init: "Qua 05 Jun 2024 18 UTC",
+        currentTime: "096",
+      },
+      possibleValues: {
+        region: ["Norte", "Sul", "Centro-Oeste", "Nordeste", "Sudeste"],
+        options: ["Níveis isobáricos D", "Níveis simples D", "Conjuntos D"],
+        field: ["Campo 3D", "Campo 4D", "Campo 7D"],
+        init: ["Qua 05 Jun 2024 00 UTC", "Qua 05 Jun 2024 06 UTC", "Qua 05 Jun 2024 12 UTC", "Qua 05 Jun 2024 18 UTC"],
+        time: ["040", "048", "060", "072", "084", "096", "108", "120", "132", "144", "156", "168", "180", "192"],
+      },
+    },
+  ]
+
   const frames = [
     {
       id: 1,
       model: "BAM",
       region: "Sul",
-      options: "Níveis isobáricos",
-      field: "Campo 3",
+      options: "Níveis isobáricos A",
+      field: "Campo 3A",
       init: "Qua 05 Jun 2024 00 UTC",
-      start: "030",
+      currentTime: "030",
     },
     {
       id: 2,
       model: "WRF",
       region: "Sul",
-      options: "Níveis simples",
-      field: "Campo 4",
+      options: "Níveis simples B",
+      field: "Campo 4B",
       init: "Qua 05 Jun 2024 06 UTC",
-      start: "024",
+      currentTime: "024",
     },
     {
       id: 3,
       model: "BRAMS",
-      region: "Sul",
-      options: "Conjuntos",
-      field: "Campo 7",
+      region: "América do Sul",
+      options: "Conjuntos C",
+      field: "Campo 7C",
       init: "Qua 05 Jun 2024 12 UTC",
-      start: "036",
+      currentTime: "036",
     },
     {
       id: 4,
       model: "Outros",
       region: "Sul",
-      options: "Níveis isobáricos",
-      field: "Campo 3",
+      options: "Níveis isobáricos D",
+      field: "Campo 3D",
       init: "Qua 05 Jun 2024 18 UTC",
-      start: "024",
+      currentTime: "096",
     },
   ]
 
-  const values = {
-    model: ["BAM", "WRF", "BRAMS", "Outros"],
-    region: ["Norte", "Sul", "Centro-Oeste", "Nordeste", "Sudeste"],
-    options: ["Níveis isobáricos", "Níveis simples", "Conjuntos"],
-    field: ["Campo 3", "Campo 4", "Campo 7"],
-    init: ["Qua 05 Jun 2024 00 UTC", "Qua 05 Jun 2024 06 UTC", "Qua 05 Jun 2024 12 UTC", "Qua 05 Jun 2024 18 UTC"],
-    start: ["024", "030", "036", "040", "048", "060", "072", "084", "096", "108", "120", "132", "144", "156", "168", "180", "192", "204", "216", "228", "240"],
-  }
-
   return (
     <div className="grid grid-cols-2">
-      <Frame frames={frames} id={1} values={values} />
-      <Frame frames={frames} id={2} values={values} />
-      <Frame frames={frames} id={3} values={values} />
-      <Frame frames={frames} id={4} values={values} />
+      <Frame id={1} frames={frames} models={models} />
+      <Frame id={2} frames={frames} models={models} />
+      <Frame id={3} frames={frames} models={models} />
+      <Frame id={4} frames={frames} models={models} />
     </div>
   )
 }

@@ -2,13 +2,13 @@ import { FaRegRectangleList, FaChevronLeft, FaPlay, FaChevronRight, FaClock } fr
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 
-const TopFrame = ({ frames, id, values }) => {
+const TopFrame = ({ frame, setFrame, model, models }) => {
 
   const classButton = "size-9 md:size-[38px] inline-flex justify-center items-center gap-2 rounded-md font-medium bg-white border border-gray-200 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-50 text-xs md:text-sm"
 
   const classButtonTime = "size-9 md:size-[38px] inline-flex justify-center items-center gap-2 rounded-md font-medium bg-white border border-gray-200 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-50 text-xs md:text-sm"
 
-  const classButtonTimeActive = "size-9 md:size-[38px] inline-flex justify-center items-center gap-2 rounded-md font-medium bg-gray-100 border border-gray-200 text-gray-700 focus:outline-none focus:bg-gray-50 text-xs md:text-sm"
+  const classButtonTimeActive = "size-9 md:size-[38px] inline-flex justify-center items-center gap-2 rounded-md font-medium bg-blue-700 border border-gray-200 text-gray-50 focus:outline-none focus:bg-gray-50 text-xs md:text-sm"
 
   const [openDropdownConfig, setOpenDropdownConfig] = useState(false)
   const [openDropdownTime, setOpenDropdownTime] = useState(false)
@@ -21,33 +21,72 @@ const TopFrame = ({ frames, id, values }) => {
     setOpenDropdownTime(!openDropdownTime)
   }
 
-  const [frame, setFrame] = useState(frames.find(frame => frame.id === id))
+  const handleDecreaseTime = () => {
+    // console.log("decreaseTime")
+    // console.log("frame.currentTime", frame.currentTime)
+    // console.log("model.possibleValues.time", model.possibleValues.time)
+    // console.log("indexOf(model.currentTime)", model.possibleValues.time.indexOf(frame.currentTime))
+    // console.log("model.possibleValues.time.length", model.possibleValues.time.length)
+    if (model.possibleValues.time.indexOf(frame.currentTime) > 0) {
+      // console.log("model.possibleValues.time[model.possibleValues.time.indexOf(frame.currentTime) - 1]", model.possibleValues.time[model.possibleValues.time.indexOf(frame.currentTime) - 1])
+      const previousTime = model.possibleValues.time[model.possibleValues.time.indexOf(frame.currentTime) - 1]
+      // console.log("previousTime", previousTime)
+      setFrame({ ...frame, currentTime: previousTime })
+    }
+  }
 
-  console.log("frames", frames)
-  console.log("values", values)
-  console.log("values.model", values.model)
-  console.log("id", id)
-  console.log("frame", frame)
+  const handleIncreaseTime = () => {
+    // console.log("increaseTime")
+    // console.log("frame.currentTime", frame.currentTime)
+    // console.log("model.possibleValues.time", model.possibleValues.time)
+    // console.log("indexOf(frame.currentTime)", model.possibleValues.time.indexOf(frame.currentTime))
+    // console.log("model.possibleValues.time.length", model.possibleValues.time.length)
+    if (model.possibleValues.time.indexOf(frame.currentTime) < model.possibleValues.time.length - 1) {
+      // console.log("model.possibleValues.time[model.possibleValues.time.indexOf(frame.currentTime) + 1]", model.possibleValues.time[model.possibleValues.time.indexOf(frame.currentTime) + 1])
+      const nextTime = model.possibleValues.time[model.possibleValues.time.indexOf(frame.currentTime) + 1]
+      // console.log("nextTime", nextTime)
+      setFrame({ ...frame, currentTime: nextTime })
+    }
+  }
 
-  return (
-    <div className="flex justify-between">
-      <div className="flex relative">
-        <button className={classButton} onClick={handleDropdownConfig}><FaRegRectangleList /></button>
-        {openDropdownConfig && (
-          <form>
+  const handleChangeModel = (e) => {
+    const model = models.find(model => model.name === e.target.value)
+    setFrame({
+      ...frame,
+      model: e.target.value,
+      region: model.defaultValues.region,
+      options: model.defaultValues.options,
+      field: model.defaultValues.field,
+      init: model.defaultValues.init,
+      currentTime: model.defaultValues.currentTime,
+    })
+
+    console.log("handleChangeModel (frame)", frame)
+  }
+
+  // console.log("frames", frames)
+  // console.log("possibleValues", model.possibleValues)
+  // console.log("possibleValues.model", model.possibleValues.model)
+  // console.log("id", id)
+  console.log("TopFrame (frame)", frame)
+
+  const DropDownConfig = () => {
+    return (
+      <>
+        <form>
             <div className="absolute top-12 left-0 bg-gray-100 border border-gray-200 rounded-md p-4">
               <div className="border-b border-gray-200">
                 <div>
                   <label>Modelo e região</label>
-                  <select name="model" value={frame.model} onChange={e => setFrame({ ...frame, model: e.target.value })}>
-                    {values.model.map((model, index) => (
-                      <option key={index} value={model}>{model}</option>
+                  <select name="model" value={frame.model} onChange={e => handleChangeModel(e)}>
+                    {models.map((model, index) => (
+                      <option key={index} value={model.name}>{model.name}</option>
                     ))}
                   </select>
                 </div>
                 <div>
                   <select name="region" value={frame.region} onChange={e => setFrame({ ...frame, region: e.target.value })}>
-                    {values.region.map((region, index) => (
+                    {model.possibleValues.region.map((region, index) => (
                       <option key={index} value={region}>Região {region}</option>
                     ))}
                   </select>
@@ -56,17 +95,13 @@ const TopFrame = ({ frames, id, values }) => {
               <div className="border-b border-gray-200">
                 <div>
                   <label>Características do modelo</label>
-                  <div>
-                    <input type="radio" name="options" value="Níveis isobáricos" onChange={e => setFrame({ ...frame, options: e.target.value })} defaultChecked={frame.options === "Níveis isobáricos"} /> Níveis isobáricos
-                  </div>
-                  <div>
-                    <input type="radio" name="options" value="Níveis simples" onChange={e => setFrame({ ...frame, options: e.target.value })} defaultChecked={frame.options === "Níveis simples"} /> Níveis simples
-                  </div>
-                  <div>
-                    <input type="radio" name="options" value="Conjuntos" onChange={e => setFrame({ ...frame, options: e.target.value })} defaultChecked={frame.options === "Conjuntos"} /> Conjuntos
-                  </div>
+                  {model.possibleValues.options.map((option, index) => (
+                    <div key={index}>
+                      <input type="radio" name="options" value={option} onChange={e => setFrame({ ...frame, options: e.target.value })} defaultChecked={frame.options === option} /> {option}
+                    </div>
+                  ))}
                   <select name="field" value={frame.field} onChange={e => setFrame({ ...frame, field: e.target.value })}>
-                    {values.field.map((field, index) => (
+                    {model.possibleValues.field.map((field, index) => (
                       <option key={index} value={field}>{field}</option>
                     ))}
                   </select>
@@ -76,7 +111,7 @@ const TopFrame = ({ frames, id, values }) => {
                 <div>
                   <label htmlFor="init">Inicialização</label>
                   <select name="init" value={frame.init} onChange={e => setFrame({ ...frame, init: e.target.value })}>
-                    {values.init.map((init, index) => (
+                    {model.possibleValues.init.map((init, index) => (
                       <option key={index} value={init}>{init}</option>
                     ))}
                   </select>
@@ -84,8 +119,32 @@ const TopFrame = ({ frames, id, values }) => {
               </div>
             </div>
           </form>
-        )}
+      </>
+    )
+  }
 
+  const DropDownTime = () => {
+    return (
+      <>
+        <div className="absolute top-12 right-0 bg-gray-100 border border-gray-200 rounded-md p-4">
+          <div>
+            <label>Horas de previsão</label>
+            <div>
+              {model.possibleValues.time.map((time, index) => (
+                <button key={index} className={frame.currentTime === time ? classButtonTimeActive : classButtonTime} onClick={() => setFrame({ ...frame, time })}>{time}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  return (
+    <div className="flex justify-between">
+      <div className="flex relative">
+        <button className={classButton} onClick={handleDropdownConfig}><FaRegRectangleList /></button>
+        {openDropdownConfig && <DropDownConfig />}
         <div className="mx-2">
           <div className="font-bold text-sm">{frame.model} {">"} Região {frame.region}</div>
           <div className="text-xs">{frame.init}</div>
@@ -93,47 +152,50 @@ const TopFrame = ({ frames, id, values }) => {
       </div>
       <div className="flex relative">
         <div className="flex gap-1">
-          <button className={classButton}><FaChevronLeft /></button>
+          <button className={classButton} onClick={handleDecreaseTime}><FaChevronLeft /></button>
           <button className={classButton}><FaPlay /></button>
-          <button className={classButton}><FaChevronRight /></button>
+          <button className={classButton} onClick={handleIncreaseTime}><FaChevronRight /></button>
         </div>
         <div className="flex items-center">
-          <div className="font-bold text-sm px-2">{frame.start} horas</div>
+          <div className="font-bold text-sm px-2">{frame.currentTime} horas</div>
           <button className={classButton} onClick={handleDropdownTime}><FaClock /></button>
-          {openDropdownTime && (
-            <div className="absolute top-12 right-0 bg-gray-100 border border-gray-200 rounded-md p-4">
-              <div>
-                <label>Horas de previsão</label>
-                <div>
-                  {values.start.map((start, index) => (
-                    <button key={index} className={frame.start === start ? classButtonTimeActive : classButtonTime} onClick={() => setFrame({ ...frame, start })}>{start}</button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+          {openDropdownTime && <DropDownTime />}
         </div>
       </div>
     </div>
   )
 }
 
-const ImageFrame = ({ frames, id }) => {
+const ImageFrame = ({ frame, model }) => {
 
-  console.log(frames, id)
+  // console.log(frames, id)
   
+  console.log("frame", frame)
+
   return (
     <div>
-      <img src="https://picsum.photos/200/300" alt="imagem" className="rounded-md mt-4 w-full " />
+      <p>Url da imagem:</p>
+      <p>[model: {frame.model}] [region: {frame.region}] [options: {frame.options}] [field: {frame.field}]</p>
+      <p>[init: {frame.init}]</p>
+      <p>[possibleValues.time: {model.possibleValues.time.map(time => time + " ")}]</p>
+      <p><b>[currentTime: {frame.currentTime}]</b></p>
+      <img src="https://s1.cptec.inpe.br/grafico/Modelos/SMNA/figuras/precipitacao/2024/07/11/00/prec_6h_glo_2024071100Z_2024071100Z.png" alt="imagem" className="rounded-md mt-4 w-full " />
     </div>
   )
 }
 
-export default function Frame({ frames, id, values }) {
+export default function Frame({ id, frames, models }) {
+
+  const [frame, setFrame] = useState(frames.find(frame => frame.id === id))
+  console.log("Frame (id, frame)", id, frame)
+
+  const model = models.find(model => model.name === frame.model)
+  console.log("model", model)
+
   return (
     <div className="flex flex-col border-r border-b border-gray-r-300 p-4">
-      <TopFrame frames={frames} id={id} values={values} />
-      <ImageFrame frames={frames} />
+      <TopFrame frame={frame} setFrame={setFrame} frames={frames} model={model} models={models} />
+      <ImageFrame frame={frame} frames={frames} model={model} />
     </div>
   )
 }
@@ -141,16 +203,17 @@ export default function Frame({ frames, id, values }) {
 Frame.propTypes = {
   id: PropTypes.number,
   frames: PropTypes.array,
-  values: PropTypes.object,
+  models: PropTypes.array,
 }
 
 TopFrame.propTypes = {
-  id: PropTypes.number,
-  frames: PropTypes.array,
-  values: PropTypes.object,
+  frame: PropTypes.object,
+  setFrame: PropTypes.func,
+  model: PropTypes.object,
+  models: PropTypes.array,
 }
 
 ImageFrame.propTypes = {
-  id: PropTypes.number,
-  frames: PropTypes.array,
+  frame: PropTypes.object,
+  model: PropTypes.object,
 }
