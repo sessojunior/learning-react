@@ -1,5 +1,5 @@
-import { FaRegRectangleList, FaChevronLeft, FaPlay, FaChevronRight, FaClock } from "react-icons/fa6"
-import { useState } from 'react'
+import { FaRegRectangleList, FaChevronLeft, FaPlay, FaPause, FaChevronRight, FaClock } from "react-icons/fa6"
+import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 const TopFrame = ({ frame, setFrame, model, models }) => {
@@ -49,6 +49,53 @@ const TopFrame = ({ frame, setFrame, model, models }) => {
     }
   }
 
+  {/* Begin Timer */ }
+
+  // Initialize state variables for timer and timeInterval
+  const [timer, setTimer] = useState(0);
+  const [timeInterval, setTimeInterval] = useState(null);
+  const [currentTime, setCurrentTime] = useState(model.possibleValues.time[model.possibleValues.time.indexOf(frame.currentTime)])
+
+  useEffect(() => {
+    // console.log("currentTime", currentTime)
+    setFrame({ ...frame, currentTime: currentTime })
+  }, [timer]);
+
+  // Function to start the timer
+  const startTimer = () => {
+    // Use setInterval to update the timer every 1000 milliseconds (1 second)
+    setTimeInterval(setInterval(() => {
+      // Update the timer by incrementing the previous value by 1
+      setTimer((prev) => prev + 1)
+      setCurrentTime((prev) => {
+        if (prev === model.possibleValues.time[model.possibleValues.time.length - 1]) {
+          return model.possibleValues.time[0]
+        } else {
+          return model.possibleValues.time[model.possibleValues.time.indexOf(prev) + 1]
+        }
+      })
+      setFrame({ ...frame, isPlaying: true })
+    }, 1000))
+  }
+
+  // Function to pause the timer
+  const pauseTimer = () => {
+    // Clear the interval to stop the timer from updating
+    clearInterval(timeInterval)
+    setFrame({ ...frame, isPlaying: false })
+  }
+
+  // Function to reset the timer
+  // const resetTimer = () => {
+  //   // Reset the timer value to 0
+  //   setTimer(0)
+  //   setFrame({ ...frame, isPlaying: true, currentTime: model.possibleValues.time[0] })
+  //   // Clear the interval to stop the timer
+  //   clearInterval(timeInterval)
+  // }
+
+  {/* End Timer */}
+
   const handleChangeModel = (e) => {
     const model = models.find(model => model.name === e.target.value)
     setFrame({
@@ -68,7 +115,7 @@ const TopFrame = ({ frame, setFrame, model, models }) => {
   // console.log("possibleValues", model.possibleValues)
   // console.log("possibleValues.model", model.possibleValues.model)
   // console.log("id", id)
-  console.log("TopFrame (frame)", frame)
+  // console.log("TopFrame (frame)", frame)
 
   const DropDownConfig = () => {
     return (
@@ -153,7 +200,12 @@ const TopFrame = ({ frame, setFrame, model, models }) => {
       <div className="flex relative">
         <div className="flex gap-1">
           <button className={classButton} onClick={handleDecreaseTime}><FaChevronLeft /></button>
-          <button className={classButton}><FaPlay /></button>
+          {frame.isPlaying ? (
+            <button className={classButton} onClick={pauseTimer}><FaPause /></button>
+          ) : (
+            <button className={classButton} onClick={startTimer}><FaPlay /></button>
+          )}
+          {/* <button className={classButton} onClick={resetTimer}>Reset</button> */}
           <button className={classButton} onClick={handleIncreaseTime}><FaChevronRight /></button>
         </div>
         <div className="flex items-center">
@@ -170,7 +222,7 @@ const ImageFrame = ({ frame, model }) => {
 
   // console.log(frames, id)
   
-  console.log("frame", frame)
+  // console.log("frame", frame)
 
   return (
     <div>
@@ -178,7 +230,8 @@ const ImageFrame = ({ frame, model }) => {
       <p>[model: {frame.model}] [region: {frame.region}] [options: {frame.options}] [field: {frame.field}]</p>
       <p>[init: {frame.init}]</p>
       <p>[possibleValues.time: {model.possibleValues.time.map(time => time + " ")}]</p>
-      <p><b>[currentTime: {frame.currentTime}]</b></p>
+      <p><b>[frame.currentTime: {frame.currentTime}]</b></p>
+      <p>[frame.isPlaying: {frame.isPlaying ? "true" : "false"}]</p>
       <img src="https://s1.cptec.inpe.br/grafico/Modelos/SMNA/figuras/precipitacao/2024/07/11/00/prec_6h_glo_2024071100Z_2024071100Z.png" alt="imagem" className="rounded-md mt-4 w-full " />
     </div>
   )
@@ -187,10 +240,10 @@ const ImageFrame = ({ frame, model }) => {
 export default function Frame({ id, frames, models }) {
 
   const [frame, setFrame] = useState(frames.find(frame => frame.id === id))
-  console.log("Frame (id, frame)", id, frame)
+  // console.log("Frame (id, frame)", id, frame)
 
   const model = models.find(model => model.name === frame.model)
-  console.log("model", model)
+  // console.log("model", model)
 
   return (
     <div className="flex flex-col border-r border-b border-gray-r-300 p-4">

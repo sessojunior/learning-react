@@ -86,6 +86,7 @@ export default function Frames() {
       field: "Campo 3A",
       init: "Qua 05 Jun 2024 00 UTC",
       currentTime: "030",
+      isPlaying: false,
     },
     {
       id: 2,
@@ -95,6 +96,7 @@ export default function Frames() {
       field: "Campo 4B",
       init: "Qua 05 Jun 2024 06 UTC",
       currentTime: "024",
+      isPlaying: false,
     },
     {
       id: 3,
@@ -104,6 +106,7 @@ export default function Frames() {
       field: "Campo 7C",
       init: "Qua 05 Jun 2024 12 UTC",
       currentTime: "036",
+      isPlaying: false,
     },
     {
       id: 4,
@@ -113,6 +116,7 @@ export default function Frames() {
       field: "Campo 3D",
       init: "Qua 05 Jun 2024 18 UTC",
       currentTime: "096",
+      isPlaying: false,
     },
   ]
 
