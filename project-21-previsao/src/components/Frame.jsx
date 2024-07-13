@@ -6,6 +6,8 @@ import { useContext } from 'react'
 import { ConfigContext } from '../contexts/Config'
 
 const TopFrame = ({ frame, setFrame, model, models }) => {
+  
+  const { config, setConfig } = useContext(ConfigContext)
 
   const classButton = "size-9 md:size-[38px] inline-flex justify-center items-center gap-2 rounded-md font-medium bg-white border border-gray-200 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-50 text-xs md:text-sm"
 
@@ -61,8 +63,27 @@ const TopFrame = ({ frame, setFrame, model, models }) => {
 
   useEffect(() => {
     // console.log("currentTime", currentTime)
-    setFrame({ ...frame, currentTime: currentTime })
-  }, [timer]);
+    if (timer > 0) {
+      setFrame({ ...frame, currentTime: currentTime })
+    }
+  }, [timer])
+
+  useEffect(() => {
+    const index = frame.id - 1
+    // console.log("index", index)
+    // console.log("frame", frame)
+    // console.log("config.frames", config.frames)
+
+    setConfig({ ...config, frames: [...config.frames.slice(0, index), { ...frame, isPlaying: false }, ...config.frames.slice(index + 1)] })
+    console.log("mudou config")
+    // localStorage.setItem('frames', JSON.stringify(config.frames))
+  }, [frame])
+
+  useEffect(() => {
+    console.log("config.frames", config.frames)
+    localStorage.setItem('frames', JSON.stringify(config.frames))
+    console.log("salvou no localStorage")
+  }, [config.frames])
 
   // Function to start the timer
   const startTimer = () => {
@@ -114,6 +135,22 @@ const TopFrame = ({ frame, setFrame, model, models }) => {
     console.log("handleChangeModel (frame)", frame)
   }
 
+  const handleChangeRegion = (e) => {
+    setFrame({ ...frame, region: e.target.value })
+  }
+
+  const handleChangeOptions = (e) => {
+    setFrame({ ...frame, options: e.target.value })
+  }
+
+  const handleChangeField = (e) => {
+    setFrame({ ...frame, field: e.target.value })
+  }
+
+  const handleChangeInit = (e) => {
+    setFrame({ ...frame, init: e.target.value })
+  }
+
   // console.log("frames", frames)
   // console.log("possibleValues", model.possibleValues)
   // console.log("possibleValues.model", model.possibleValues.model)
@@ -135,7 +172,7 @@ const TopFrame = ({ frame, setFrame, model, models }) => {
                   </select>
                 </div>
                 <div>
-                  <select name="region" value={frame.region} onChange={e => setFrame({ ...frame, region: e.target.value })}>
+                  <select name="region" value={frame.region} onChange={e => handleChangeRegion(e)}>
                     {model.possibleValues.region.map((region, index) => (
                       <option key={index} value={region}>Região {region}</option>
                     ))}
@@ -147,10 +184,10 @@ const TopFrame = ({ frame, setFrame, model, models }) => {
                   <label>Características do modelo</label>
                   {model.possibleValues.options.map((option, index) => (
                     <div key={index}>
-                      <input type="radio" name="options" value={option} onChange={e => setFrame({ ...frame, options: e.target.value })} defaultChecked={frame.options === option} /> {option}
+                      <input type="radio" name="options" value={option} onChange={e => handleChangeOptions(e)} defaultChecked={frame.options === option} /> {option}
                     </div>
                   ))}
-                  <select name="field" value={frame.field} onChange={e => setFrame({ ...frame, field: e.target.value })}>
+                  <select name="field" value={frame.field} onChange={e => handleChangeField(e)}>
                     {model.possibleValues.field.map((field, index) => (
                       <option key={index} value={field}>{field}</option>
                     ))}
@@ -160,7 +197,7 @@ const TopFrame = ({ frame, setFrame, model, models }) => {
               <div>
                 <div>
                   <label htmlFor="init">Inicialização</label>
-                  <select name="init" value={frame.init} onChange={e => setFrame({ ...frame, init: e.target.value })}>
+                  <select name="init" value={frame.init} onChange={e => handleChangeInit(e)}>
                     {model.possibleValues.init.map((init, index) => (
                       <option key={index} value={init}>{init}</option>
                     ))}
@@ -242,14 +279,14 @@ const ImageFrame = ({ frame, model }) => {
   )
 }
 
-export default function Frame({ id, frames, models }) {
+export default function Frame({ id }) {
   
   const { config } = useContext(ConfigContext)
 
-  const [frame, setFrame] = useState(frames.find(frame => frame.id === id))
+  const [frame, setFrame] = useState(config.frames.find(frame => frame.id === id))
   // console.log("Frame (id, frame)", id, frame)
 
-  const model = models.find(model => model.name === frame.model)
+  const model = config.models.find(model => model.name === frame.model)
   // console.log("model", model)
 
   let classFrame = ""
@@ -261,8 +298,8 @@ export default function Frame({ id, frames, models }) {
 
   return (
     <div className={classFrame}>
-      <TopFrame frame={frame} setFrame={setFrame} frames={frames} model={model} models={models} />
-      <ImageFrame frame={frame} frames={frames} model={model} />
+      <TopFrame frame={frame} setFrame={setFrame} model={model} models={config.models} />
+      <ImageFrame frame={frame} model={model} />
     </div>
   )
 }

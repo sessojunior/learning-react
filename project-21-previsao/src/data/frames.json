@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "model": "BAM",
+    "region": "Sul",
+    "options": "Níveis isobáricos A",
+    "field": "Campo 3A",
+    "init": "Qua 05 Jun 2024 00 UTC",
+    "currentTime": "030",
+    "isPlaying": false
+  },
+  {
+    "id": 2,
+    "model": "WRF",
+    "region": "Sul",
+    "options": "Níveis simples B",
+    "field": "Campo 4B",
+    "init": "Qua 05 Jun 2024 06 UTC",
+    "currentTime": "024",
+    "isPlaying": false
+  },
+  {
+    "id": 3,
+    "model": "BRAMS",
+    "region": "América do Sul",
+    "options": "Conjuntos C",
+    "field": "Campo 7C",
+    "init": "Qua 05 Jun 2024 12 UTC",
+    "currentTime": "036",
+    "isPlaying": false
+  },
+  {
+    "id": 4,
+    "model": "Outros",
+    "region": "Sul",
+    "options": "Níveis isobáricos D",
+    "field": "Campo 3D",
+    "init": "Qua 05 Jun 2024 18 UTC",
+    "currentTime": "096",
+    "isPlaying": false
+  }
+]
