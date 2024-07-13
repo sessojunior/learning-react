@@ -17,6 +17,11 @@ export default function TopBar() {
     }
   }
 
+  const handleQuantityFrames = ({ quantity }) => {
+    console.log("handleQuantityFrames", quantity)
+    setConfig({ ...config, quantityFrames: quantity })
+  }
+
   return (
     <header className="flex justify-between items-center px-4 w-full h-16 bg-gray-100 border border-y-gray-300">
       <div>
@@ -26,9 +31,9 @@ export default function TopBar() {
         <h2 className="text-xl font-bold">Previsão Numérica do Tempo</h2>
       </div>
       <div className="flex gap-1">
-        <button className={classButton}><BsWindow /></button>
-        <button className={classButton}><BsWindowSplit /></button>
-        <button className={classButton}><BsBorderAll /></button>
+        <button className={classButton} onClick={() => handleQuantityFrames({ quantity: 1 })}><BsWindow /></button>
+        <button className={classButton} onClick={() => handleQuantityFrames({ quantity: 2 })}><BsWindowSplit /></button>
+        <button className={classButton} onClick={() => handleQuantityFrames({ quantity: 4 })}><BsBorderAll /></button>
       </div>
     </header>
   )

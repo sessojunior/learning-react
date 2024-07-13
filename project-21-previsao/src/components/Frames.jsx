@@ -1,6 +1,11 @@
 import Frame from "./Frame"
 
+import { useContext } from 'react'
+import { ConfigContext } from '../contexts/Config'
+
 export default function Frames() {
+  
+  const { config } = useContext(ConfigContext)
 
   const models = [
     {
@@ -121,11 +126,26 @@ export default function Frames() {
   ]
 
   return (
-    <div className="grid grid-cols-2">
-      <Frame id={1} frames={frames} models={models} />
-      <Frame id={2} frames={frames} models={models} />
-      <Frame id={3} frames={frames} models={models} />
-      <Frame id={4} frames={frames} models={models} />
-    </div>
+    <>
+      {config.quantityFrames === 1 && (
+        <div className="flex justify-center items-center max-w-3xl mx-auto">
+          <Frame id={1} frames={frames} models={models} />
+        </div>
+      )}
+      {(config.quantityFrames === 2) && (
+        <div className="grid grid-cols-2">
+          <Frame id={1} frames={frames} models={models} />
+          <Frame id={2} frames={frames} models={models} />
+        </div>
+      )}
+      {(config.quantityFrames === 4) && (
+        <div className="grid grid-cols-2">
+          <Frame id={1} frames={frames} models={models} />
+          <Frame id={2} frames={frames} models={models} />
+          <Frame id={3} frames={frames} models={models} />
+          <Frame id={4} frames={frames} models={models} />
+        </div>
+      )}
+    </>
   )
 }
