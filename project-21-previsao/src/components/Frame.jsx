@@ -118,8 +118,8 @@ const TopFrame = ({ frame, setFrame, model, setModel, models }) => {
   //   clearInterval(timeInterval)
   // }
 
-  {/* End Timer */}
-
+  {/* End Timer */ }
+  
   const handleChangeModel = (e) => {
     const model = models.find(model => model.value === e.target.value)
     setModel(model)
@@ -130,6 +130,7 @@ const TopFrame = ({ frame, setFrame, model, setModel, models }) => {
       options: model.defaultValues.options.value,
       field: model.defaultValues.field.value,
       init: model.defaultValues.init,
+      timeRun: model.defaultValues.timeRun,
       currentTime: model.defaultValues.currentTime,
     })
     // console.log("handleChangeModel (model)", model)
@@ -263,29 +264,87 @@ const TopFrame = ({ frame, setFrame, model, setModel, models }) => {
   )
 }
 
-const ImageFrame = ({ frame, model }) => {
+const ImageFrame = ({ frame, model, date }) => {
 
   // console.log(frames, id)
   // console.log("frame", frame)
 
   return (
     <div>
+      <p>Exemplo de URL da imagem:
+        <br />[https://s1.cptec.inpe.br/grafico/Modelos/<b>{frame.model}</b>/<b>{frame.region}</b>/<b>{frame.options}</b>/<b>{frame.field}</b>
+        <br />/<b>{date.yearMinusTimeRun}</b>/<b>{date.monthMinusTimeRun}</b>/<b>{date.dayMinusTimeRun}</b>/<b>{date.lastTurn}</b>/modelo_<b>{frame.currentTime}</b>_<b>{Number(date.timeRun)}</b>h_glo_<b>{date.yearMinusTimeRun}{date.monthMinusTimeRun}{date.dayMinusTimeRun}{date.lastTurn}</b>Z.png]</p>
       <p>Dados para a troca de imagem:</p>
-      <p>Exemplo:
-        <br />https://s1.cptec.inpe.br/grafico/Modelos/<b>{frame.model}</b>/<b>{frame.region}</b>/<b>{frame.options}</b>/<b>{frame.field}</b>
-        <br />/2024/07/11/00/prec_6h_glo_2024071100Z_2024071100Z.png</p>
-      <p>[frame.model: {frame.model}]</p>
-      <p>[frame.region: {frame.region}]</p>
-      <p>[frame.options: {frame.options}]</p>
-      <p>[frame.field: {frame.field}]</p>
-      <p>[frame.init: {frame.init}]</p>
-      <p>[model.possibleValues.time: {model.possibleValues.time.map(time => time + " ")}]</p>
-      <p><b>[frame.currentTime: {frame.currentTime}]</b></p>
-      <p>[frame.isPlaying: {frame.isPlaying ? "true" : "false"}]</p>
+      <p>[frame.model: <b>{frame.model}</b>]</p>
+      <p>[frame.region: <b>{frame.region}</b>]</p>
+      <p>[frame.options: <b>{frame.options}</b>]</p>
+      <p>[frame.field: <b>{frame.field}</b>]</p>
+      <p>[model.possibleValues.time: <b>{model.possibleValues.time.map(time => time + " ")}</b>]</p>
+      <p><b>[frame.currentTime: <b>{frame.currentTime}</b>]</b></p>
+      <p>[frame.isPlaying: <b>{frame.isPlaying ? "true" : "false"}</b>]</p>
+      <p>[frame.timeRun: <b>{frame.timeRun}</b>]</p>
+      <p>[frame.init: <b>{frame.init}</b>]</p>
+      <p>Data atual: <b>{date.year}-{date.month}-{date.day} {date.hour}:{date.minute}:{date.second} - {date.weekName} {date.day} {date.monthName} {date.year}</b></p>
+      <p>[timeRun: <b>{date.timeRun}</b>]</p>
+      <p>Data menos o timeRun: <b>{date.yearMinusTimeRun} {date.monthMinusTimeRun} {date.dayMinusTimeRun} {date.hourMinusTimeRun}:{date.minuteMinusTimeRun}:{date.secondMinusTimeRun}</b></p>
+      <p>[lastTurn: <b>{date.lastTurn}</b>]</p>
+      <p>Último turno de timeRun (00, 06, 12, 18]: <b>{date.yearMinusTimeRun}{date.monthMinusTimeRun}{date.dayMinusTimeRun}<u>{date.lastTurn}</u>Z</b></p>
       <img src="https://s1.cptec.inpe.br/grafico/Modelos/SMNA/figuras/precipitacao/2024/07/11/00/prec_6h_glo_2024071100Z_2024071100Z.png" alt="imagem" className="rounded-md mt-4 w-full " />
     </div>
   )
 }
+
+{/* Start tests with date */ }
+const dateTime = (date, timeRun) => {
+  const year = String(date.getFullYear())
+  const month = ("0" + (date.getMonth() + 1)).slice(-2)
+  const day = ("0" + date.getDate()).slice(-2)
+  const hour = ("0" + (date.getHours() + 1)).slice(-2)
+  const minute = ("0" + (date.getMinutes() + 1)).slice(-2)
+  const second = ("0" + (date.getSeconds() + 1)).slice(-2)
+  const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']
+  const weekName = weekdays[date.getDay()]
+  const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+  const monthName = months[date.getMonth()]
+  console.log("year, month, day, hour, minute, second, weekName, monthName, timeRun", year, month, day, hour, minute, second, weekName, monthName, timeRun)
+
+  const dateMinusTimeRun = new Date(new Date().getTime() - ((timeRun * 60 * 60) * 1000))
+  const yearMinusTimeRun = String(dateMinusTimeRun.getFullYear())
+  const monthMinusTimeRun = ("0" + (dateMinusTimeRun.getMonth() + 1)).slice(-2)
+  const dayMinusTimeRun = ("0" + dateMinusTimeRun.getDate()).slice(-2)
+  const hourMinusTimeRun = ("0" + (dateMinusTimeRun.getHours() + 1)).slice(-2)
+  const minuteMinusTimeRun = ("0" + (dateMinusTimeRun.getMinutes() + 1)).slice(-2)
+  const secondMinusTimeRun = ("0" + (dateMinusTimeRun.getSeconds() + 1)).slice(-2)
+  console.log(dateMinusTimeRun)
+
+  let lastTurn = null
+  switch (timeRun) {
+    case "06":
+      if (Number(hourMinusTimeRun) < 6) {
+        lastTurn = "00"
+      } else if (Number(hourMinusTimeRun) >= 6 && Number(hourMinusTimeRun) < 12) {
+        lastTurn = "06"
+      } else if (Number(hourMinusTimeRun) >= 12 && Number(hourMinusTimeRun) < 18) {
+        lastTurn = "12"
+      } else {
+        lastTurn = "18"
+      }
+      break;
+    case "12":
+      if (Number(hourMinusTimeRun) < 12) {
+        lastTurn = "00"
+      } else {
+        lastTurn = "12"
+      }
+      break;
+    default:
+      lastTurn = "00"
+  }
+  console.log("lastTurn", lastTurn)
+
+  return { date, year, month, day, hour, minute, second, weekName, monthName, timeRun, yearMinusTimeRun, monthMinusTimeRun, dayMinusTimeRun, hourMinusTimeRun, minuteMinusTimeRun, secondMinusTimeRun, lastTurn }
+}
+{/* End tests with date */ }
 
 export default function Frame({ id }) {
   
@@ -299,6 +358,10 @@ export default function Frame({ id }) {
 
   const [model, setModel] = useState(config.models.find(model => model.value === frame.model))
   // console.log("model", model)
+  
+  const date = dateTime(new Date(), frame.timeRun)
+  console.log("frame.timeRun", frame.timeRun)
+  console.log("date", date)
 
   let classFrame = ""
   if (config.quantityFrames === 1) {
@@ -310,7 +373,7 @@ export default function Frame({ id }) {
   return (
     <div className={classFrame}>
       <TopFrame frame={frame} setFrame={setFrame} model={model} setModel={setModel} models={config.models} />
-      <ImageFrame frame={frame} model={model} />
+      <ImageFrame frame={frame} model={model} date={date} />
     </div>
   )
 }
@@ -332,4 +395,5 @@ TopFrame.propTypes = {
 ImageFrame.propTypes = {
   frame: PropTypes.object,
   model: PropTypes.object,
+  date: PropTypes.object,
 }

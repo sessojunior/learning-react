@@ -17,6 +17,7 @@
         "value": "c1"
       },
       "init": "Qua 05 Jun 2024 18 UTC",
+      "timeRun": "12",
       "currentTime": "096"
     },
     "possibleValues": {
@@ -107,6 +108,7 @@
         "value": "c2"
       },
       "init": "Qua 05 Jun 2024 06 UTC",
+      "timeRun": "12",
       "currentTime": "024"
     },
     "possibleValues": {
@@ -201,6 +203,7 @@
         "value": "c3"
       },
       "init": "Qua 05 Jun 2024 12 UTC",
+      "timeRun": "06",
       "currentTime": "036"
     },
     "possibleValues": {
@@ -285,6 +288,7 @@
         "value": "c1"
       },
       "init": "Qua 05 Jun 2024 18 UTC",
+      "timeRun": "24",
       "currentTime": "096"
     },
     "possibleValues": {
