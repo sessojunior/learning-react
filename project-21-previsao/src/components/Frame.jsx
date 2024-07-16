@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { useContext } from 'react'
 import { ConfigContext } from '../contexts/Config'
 
-const TopFrame = ({ frame, setFrame, model, models }) => {
+const TopFrame = ({ frame, setFrame, model, setModel, models }) => {
   
   const { config, setConfig } = useContext(ConfigContext)
 
@@ -121,18 +121,22 @@ const TopFrame = ({ frame, setFrame, model, models }) => {
   {/* End Timer */}
 
   const handleChangeModel = (e) => {
-    const model = models.find(model => model.name === e.target.value)
+    const model = models.find(model => model.value === e.target.value)
+    setModel(model)
     setFrame({
       ...frame,
       model: e.target.value,
-      region: model.defaultValues.region,
-      options: model.defaultValues.options,
-      field: model.defaultValues.field,
+      region: model.defaultValues.region.value,
+      options: model.defaultValues.options.value,
+      field: model.defaultValues.field.value,
       init: model.defaultValues.init,
       currentTime: model.defaultValues.currentTime,
     })
-
-    console.log("handleChangeModel (frame)", frame)
+    // console.log("handleChangeModel (model)", model)
+    // console.log("handleChangeModel (frame)", frame)
+    // console.log("frame.region", frame.region)
+    // console.log("model.possibleValues.region", model.possibleValues.region.find(region => region.value === frame.region))
+    // console.log("model.possibleValues.region.find", model.possibleValues.region.find(region => region.value === frame.region))
   }
 
   const handleChangeRegion = (e) => {
@@ -167,14 +171,14 @@ const TopFrame = ({ frame, setFrame, model, models }) => {
                   <label>Modelo e região</label>
                   <select name="model" value={frame.model} onChange={e => handleChangeModel(e)}>
                     {models.map((model, index) => (
-                      <option key={index} value={model.name}>{model.name}</option>
+                      <option key={index} value={model.value}>{model.label}</option>
                     ))}
                   </select>
                 </div>
                 <div>
                   <select name="region" value={frame.region} onChange={e => handleChangeRegion(e)}>
                     {model.possibleValues.region.map((region, index) => (
-                      <option key={index} value={region}>Região {region}</option>
+                      <option key={index} value={region.value}>Região {region.label}</option>
                     ))}
                   </select>
                 </div>
@@ -184,12 +188,12 @@ const TopFrame = ({ frame, setFrame, model, models }) => {
                   <label>Características do modelo</label>
                   {model.possibleValues.options.map((option, index) => (
                     <div key={index}>
-                      <input type="radio" name="options" value={option} onChange={e => handleChangeOptions(e)} defaultChecked={frame.options === option} /> {option}
+                      <input type="radio" name="options" value={option.value} onChange={e => handleChangeOptions(e)} defaultChecked={frame.options === option.value} /> {option.label}
                     </div>
                   ))}
                   <select name="field" value={frame.field} onChange={e => handleChangeField(e)}>
                     {model.possibleValues.field.map((field, index) => (
-                      <option key={index} value={field}>{field}</option>
+                      <option key={index} value={field.value}>{field.label}</option>
                     ))}
                   </select>
                 </div>
@@ -233,7 +237,8 @@ const TopFrame = ({ frame, setFrame, model, models }) => {
         <button className={classButton} onClick={handleDropdownConfig}><FaRegRectangleList /></button>
         {openDropdownConfig && <DropDownConfig />}
         <div className="mx-2">
-          <div className="font-bold text-sm">{frame.model} {">"} Região {frame.region}</div>
+          <div className="font-bold text-sm">{/* {frame.model} */} {model.label} {">"} Região {/* {frame.region} */} {model.possibleValues.region.find(region => region.value === frame.region).label}
+          </div>
           <div className="text-xs">{frame.init}</div>
         </div>
       </div>
@@ -266,6 +271,9 @@ const ImageFrame = ({ frame, model }) => {
   return (
     <div>
       <p>Dados para a troca de imagem:</p>
+      <p>Exemplo:
+        <br />https://s1.cptec.inpe.br/grafico/Modelos/<b>{frame.model}</b>/<b>{frame.region}</b>/<b>{frame.options}</b>/<b>{frame.field}</b>
+        <br />/2024/07/11/00/prec_6h_glo_2024071100Z_2024071100Z.png</p>
       <p>[frame.model: {frame.model}]</p>
       <p>[frame.region: {frame.region}]</p>
       <p>[frame.options: {frame.options}]</p>
@@ -286,7 +294,10 @@ export default function Frame({ id }) {
   const [frame, setFrame] = useState(config.frames.find(frame => frame.id === id))
   // console.log("Frame (id, frame)", id, frame)
 
-  const model = config.models.find(model => model.name === frame.model)
+  // console.log("frame.model", frame.model)
+  // console.log("config.models", config.models)
+
+  const [model, setModel] = useState(config.models.find(model => model.value === frame.model))
   // console.log("model", model)
 
   let classFrame = ""
@@ -298,7 +309,7 @@ export default function Frame({ id }) {
 
   return (
     <div className={classFrame}>
-      <TopFrame frame={frame} setFrame={setFrame} model={model} models={config.models} />
+      <TopFrame frame={frame} setFrame={setFrame} model={model} setModel={setModel} models={config.models} />
       <ImageFrame frame={frame} model={model} />
     </div>
   )
@@ -314,6 +325,7 @@ TopFrame.propTypes = {
   frame: PropTypes.object,
   setFrame: PropTypes.func,
   model: PropTypes.object,
+  setModel: PropTypes.func,
   models: PropTypes.array,
 }
 
