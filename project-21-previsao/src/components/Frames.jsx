@@ -16,13 +16,13 @@ export default function Frames() {
         </div>
       )}
       {(config.quantityFrames === 2) && (
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2">
           <Frame id={1} />
           <Frame id={2} />
         </div>
       )}
       {(config.quantityFrames === 4) && (
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2">
           <Frame id={1} />
           <Frame id={2} />
           <Frame id={3} />
