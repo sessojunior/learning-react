@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "name": "Relógio elegante",
+    "price": 20.01,
+    "qty": 13,
+    "image": "https://random-image-pepebigotes.vercel.app/api/random-image"
+  },
+  {
+    "id": 2,
+    "name": "Relógio de ouro",
+    "price": 30.01,
+    "qty": 14,
+    "image": "https://random-image-pepebigotes.vercel.app/api/random-image"
+  },
+  {
+    "id": 3,
+    "name": "Relógio de prata",
+    "price": 40.01,
+    "qty": 15,
+    "image": "https://random-image-pepebigotes.vercel.app/api/random-image"
+  },
+  {
+    "id": 4,
+    "name": "Relógio de diamante",
+    "price": 50.01,
+    "qty": 16,
+    "image": "https://random-image-pepebigotes.vercel.app/api/random-image"
+  },
+  {
+    "id": 5,
+    "name": "Relógio de ouro",
+    "price": 60.01,
+    "qty": 7,
+    "image": "https://random-image-pepebigotes.vercel.app/api/random-image"
+  },
+  {
+    "id": 6,
+    "name": "Camera verde",
+    "price": 10.01,
+    "qty": 5,
+    "image": "https://random-image-pepebigotes.vercel.app/api/random-image"
+  },
+  {
+    "id": 7,
+    "name": "Fone de ouvido",
+    "price": 12.01,
+    "qty": 32,
+    "image": "https://random-image-pepebigotes.vercel.app/api/random-image"
+  },
+  {
+    "id": 8,
+    "name": "Camisa azul",
+    "price": 14.01,
+    "qty": 17,
+    "image": "https://random-image-pepebigotes.vercel.app/api/random-image"
+  }
+]
