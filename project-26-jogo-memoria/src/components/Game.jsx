@@ -3,7 +3,7 @@ import { useState } from "react"
 
 export default function Game() {
 
-  console.log("Game")
+  // console.log("Game")
 
   const values = ["A", "B", "C", "D", "E", "F", "G", "H"]
   // console.log(values)

@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 
 export default function Board({ cards, setCards, flippedCards, setFlippedCards, chances, setChances, maxChances, result }) {
 
-  console.log("Board")
+  // console.log("Board")
   // console.log("cards", cards)
 
   function resetGame() {
