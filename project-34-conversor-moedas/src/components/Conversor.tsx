@@ -9,9 +9,11 @@ const Conversor = () => {
   const [currencyFrom, setCurrencyFrom] = useState<string>("BRL")
   const [currencyTo, setCurrencyTo] = useState<string>("USD")
   const [result, setResult] = useState<number>(0)
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     async function getCurrencies() {
+      setLoading(true)
       try {
         const response = await axios.get(`https://v6.exchangerate-api.com/v6/${apiKey}/latest/${currencyFrom}`)
 
@@ -20,6 +22,8 @@ const Conversor = () => {
         setCurrencies(response.data.conversion_rates)
       } catch (error) {
         console.log(error)
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -63,7 +67,11 @@ const Conversor = () => {
           </select>
         </div>
         <div className="flex flex-col py-2">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleConverter}>Converter</button>
+          {loading ? (
+            <button className="bg-transparent text-gray-700 font-bold py-2 px-4 rounded" disabled>Carregando...</button>
+          ) : (
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleConverter}>Converter</button>
+          )}
         </div>
         <div className="flex flex-col py-2">
           <label htmlFor="result" className="font-medium pb-2">Resultado:</label>
