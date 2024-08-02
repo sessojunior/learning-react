@@ -1,3 +1,3 @@
-# Aprendendo React
+# Aprendendo React.js
 
-Projetos de aprendizagem de React
+Projetos de aprendizagem de React.js
