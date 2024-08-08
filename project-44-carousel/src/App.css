@@ -1,0 +1,61 @@
+.App {
+  text-align: center;
+}
+
+.carousel {
+  display: flex;
+  justify-content: center;
+}
+
+.slides {
+  position: relative;
+  width: 300px;
+}
+
+.slide {
+  display: none;
+}
+
+.slide.active {
+  display: block;
+}
+
+.slide img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  position: absolute;
+  bottom: 20px;
+
+}
+
+.indicator {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.indicator.active {
+  background-color: #999;
+}
+
+.buttons {
+  box-sizing: border-box;
+  width: 100%;;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px;
+  position: absolute;
+  bottom: calc(50% - 10px);
+}
