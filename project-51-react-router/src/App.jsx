@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 
 import Menu from './components/Menu'
 import Home from './pages/Home'
@@ -21,6 +21,7 @@ export default function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<Product />} />
           <Route path="/about" element={<About />} />
+          <Route path="/sobre" element={<Navigate to="/about" />} />
           <Route path="/search" element={<Search />} />
 
           <Route path="*" element={<NotFound />} />
