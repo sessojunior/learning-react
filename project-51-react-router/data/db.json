@@ -1,0 +1,34 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Camiseta",
+      "price": 19.99
+    },
+    {
+      "id": 2,
+      "name": "Calça",
+      "price": 29.99
+    },
+    {
+      "id": 3,
+      "name": "Meia",
+      "price": 9.99
+    },
+    {
+      "id": 4,
+      "name": "Bermuda",
+      "price": 39.99
+    },
+    {
+      "id": 5,
+      "name": "Camisa",
+      "price": 49.99
+    },
+    {
+      "id": 6,
+      "name": "Vestido",
+      "price": 59.99
+    }
+  ]
+}
