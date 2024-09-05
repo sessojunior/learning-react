@@ -102,9 +102,9 @@ export default function DateTimeSelectionPage() {
       <h1 className="text-2xl font-extrabold mb-6 text-gray-800">Selecione a Data e Hora</h1>
       
       {/* Datas */}
-      <div className="w-full max-w-lg mb-6">
+      <div className="w-full max-w-2xl mb-6">
         <h2 className="text-xl font-semibold text-gray-700 mb-4">Datas Disponíveis</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-7 gap-4">
           {availableDates.map((date) => {
             const [dayOfWeek, day, monthYear] = formatDate(date);
 
@@ -127,9 +127,9 @@ export default function DateTimeSelectionPage() {
 
       {/* Horários */}
       {selectedDate && (
-        <div className="w-full max-w-lg">
+        <div className="w-full max-w-2xl">
           <h2 className="text-xl font-semibold text-gray-700 mb-4">Horários Disponíveis</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-7 gap-4">
             {hoursByDate[selectedDate].map((dateTime) => (
               <div
                 key={dateTime}
