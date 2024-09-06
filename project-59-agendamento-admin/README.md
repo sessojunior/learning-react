@@ -1,8 +1,5 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Layout para sistema de agendamento baseado em JSON. Mantém a primeira coluna e a primeira linha fixa, usando z-index e table-row. Tem funcionalidades como horários livres, horários indisponíveis, agendamentos baseados na duração etc. Informações todas vindas de objetos do tipo JSON.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![Agendamento](./public/screenshot.jpg)
