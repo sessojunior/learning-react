@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 
 const pizzaSizes = [
   { id: 'P', name: 'Pequena', description: '4 fatias', size: '35 cm', maxQtyFlavors: 1, available: true },
@@ -55,6 +55,16 @@ export default function App() {
   const [selectedFlavors, setSelectedFlavors] = useState([]) // Sabores da pizza
   const [observations, setObservations] = useState('') // Observações
   const [cart, setCart] = useState([]) // Carrinho de compras
+  const [customer, setCustomer] = useState({ // Dados do cliente
+    name: '',
+    address: '',
+    phone: '',
+    email: '',
+  });
+  const [payment, setPayment] = useState('') // Forma de pagamento
+  const [order, setOrder] = useState({
+
+  }) // Informações do pedido
 
   // Tamanho da pizza
   const handleSize = (size) => {
@@ -77,7 +87,7 @@ export default function App() {
     if (flavorId === "") {
       setSelectedFlavors(prevFlavors => {
         const newFlavors = [...prevFlavors];
-        newFlavors[index] = undefined; // Remove the flavor selection
+        newFlavors[index] = undefined; // Remove a seleção do sabor
         return newFlavors;
       });
       return;
@@ -135,7 +145,7 @@ export default function App() {
   };
 
   // Ingredientes extras do sabor da pizza
-  const handleFlavorExtraIngredients = (index, extraIngredient) => {
+  const handleFlavorExtraIngredients = (index, extraIngredient, qtyFlavors) => {
     setSelectedFlavors((prevFlavors) => {
       const newFlavors = [...prevFlavors];
 
@@ -149,8 +159,11 @@ export default function App() {
         // Remove o ingrediente se já estiver selecionado
         newFlavors[index].extraIngredients = newFlavors[index].extraIngredients.filter((i) => i.id !== ingredient.id);
       } else {
+        // Preço do ingrediente extra deve ser dividido pelo número de sabores
+        const price = ingredient.price > 0 ? ingredient.price / qtyFlavors : 0
+
         // Adiciona o ingrediente com id e price se não estiver presente
-        newFlavors[index].extraIngredients.push({ id: ingredient.id, price: ingredient.price });
+        newFlavors[index].extraIngredients.push({ id: ingredient.id, price: price });
       }
 
       return newFlavors;
@@ -161,9 +174,6 @@ export default function App() {
   const handleObservations = (observations) => {
     setObservations(observations);
   }
-
-
-
 
   // Calcular o preço da pizza
   const calculatePizzaPrice = (flavors, crust, dough) => {
@@ -176,16 +186,15 @@ export default function App() {
     // Adiciona o preço do sabor mais caro
     price += maxFlavorPrice;
 
-    // Adiciona o total dos ingredientes extras de todos os sabores
+    // Adiciona o total dos ingredientes extras de todos os sabores, dividindo pelo número de sabores
     flavors.forEach((flavor) => {
       flavor.extraIngredients.forEach((extra) => {
-        price += extra.price;
+        price += extra.price
       });
     });
 
     return price;
   };
-
 
   // Adicionar ao carrinho
   const handleAddCart = ({ product, type }) => {
@@ -273,194 +282,259 @@ export default function App() {
     return cart.reduce((total, item) => total + item.data.price * item.qty, 0);
   };
 
+  // Informações do cliente
+  const handleCustomer = (e) => {
+    const { name, value } = e.target;
+    setCustomer(prevInfo => ({ ...prevInfo, [name]: value }));
+  };
+
+  // Forma de pagamento
+  const handlePayment = (e) => {
+    setPayment(e.target.value)
+  }
+
+  // Finalizar pedido
+  const handleCheckout = () => {
+    if (cart.length === 0) {
+      alert("Adicione itens ao carrinho antes de finalizar o pedido.")
+      return
+    }
+    if (!customer.name || !customer.address || !customer.phone || !customer.email) {
+      alert("Preencha todos os dados do cliente antes de finalizar o pedido.")
+      return
+    }
+
+    const orderDetails = {
+      customer,
+      cart,
+      total: calculateTotalPrice()
+    }
+    setOrder(orderDetails)
+
+    console.log("order", orderDetails)
+
+    alert("Seu pedido foi realizado com sucesso! Confira o array order no console.log")
+  }
+
   return (
-    <div className="flex gap-8 justify-between p-8">
-      <div className="flex flex-col w-1/2">
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Monte sua pizza</h2>
+    <>
+      <h1 className="text-4xl font-bold text-center mt-8 mb-4">Pizzaria</h1>
+      <div className="flex gap-8 justify-between p-8">
+        <div className="flex flex-col w-1/3">
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Monte sua pizza</h2>
 
-          {/* Tamanho da pizza */}
-          <h3 className="text-xl font-semibold mb-4">Escolha o tamanho da pizza</h3>
-          {pizzaSizes.filter(size => size.available).map(size => (
-            <div key={size.id} className="mb-2">
-              <input type="radio" id={size.id} name="pizza-size" checked={selectedSize.id === size.id} onChange={() => handleSize(size)} className="mr-2" />
-              <label htmlFor={size.id} className="text-md">{size.name} - {size.description} - {size.size}</label>
-            </div>
-          ))}
+            {/* Tamanho da pizza */}
+            <h3 className="text-xl font-semibold mb-4">Escolha o tamanho da pizza</h3>
+            {pizzaSizes.filter(size => size.available).map(size => (
+              <div key={size.id} className="mb-2">
+                <input type="radio" id={size.id} name="pizza-size" checked={selectedSize.id === size.id} onChange={() => handleSize(size)} className="mr-2" />
+                <label htmlFor={size.id} className="text-md">{size.name} - {size.description} - {size.size}</label>
+              </div>
+            ))}
 
-          {/* Se selecionou o tamanho da pizza */}
-          {selectedSize && (
-            <>
-              {/* Borda da pizza */}
-              <h3 className="text-xl font-semibold mt-6 mb-4">Escolha a borda da pizza</h3>
-              {pizzaCrustTypes.filter(crust => crust.available).map(crust => (
-                <div key={crust.id} className="mb-2">
-                  <input type="radio" id={crust.id} name="pizza-crust" onChange={() => handleCrust(crust)} checked={selectedCrust.id === crust.id} className="mr-2" />
-                  <label htmlFor={crust.id} className="text-md">{crust.name} {crust.price > 0 && `(+R$ ${crust.price})`}</label>
-                </div>
-              ))}
-
-              {/* Massa da pizza */}
-              <h3 className="text-xl font-semibold mt-6 mb-4">Escolha a massa da pizza</h3>
-              {pizzaDoughTypes.filter(dough => dough.available).map(dough => (
-                <div key={dough.id} className="mb-2">
-                  <input type="radio" id={dough.id} name="pizza-dough" onChange={() => handleDough(dough)} checked={selectedDough.id === dough.id} className="mr-2" />
-                  <label htmlFor={dough.id} className="text-md">{dough.name} {dough.price > 0 && `(+R$ ${dough.price})`}</label>
-                </div>
-              ))}
-
-              {/* Quantidade de sabores */}
-              <h3 className="text-xl font-semibold mt-6 mb-4">Escolha a quantidade de sabores</h3>
-              <select onChange={(e) => handleFlavorQty(e.target.value)} value={selectFlavorQty} className="w-full border border-gray-300 p-2 rounded">
-                {Array.from({ length: selectedSize.maxQtyFlavors }, (_, i) => i + 1).map(qty => (
-                  <option key={qty} value={qty}>{qty} sabor{qty > 1 ? 'es' : ''}</option>
+            {/* Se selecionou o tamanho da pizza */}
+            {selectedSize && (
+              <>
+                {/* Borda da pizza */}
+                <h3 className="text-xl font-semibold mt-6 mb-4">Escolha a borda da pizza</h3>
+                {pizzaCrustTypes.filter(crust => crust.available).map(crust => (
+                  <div key={crust.id} className="mb-2">
+                    <input type="radio" id={crust.id} name="pizza-crust" onChange={() => handleCrust(crust)} checked={selectedCrust.id === crust.id} className="mr-2" />
+                    <label htmlFor={crust.id} className="text-md">{crust.name} {crust.price > 0 && `(+R$ ${crust.price})`}</label>
+                  </div>
                 ))}
-              </select>
-              
-              {/* Sabores da pizza */}
-              {Array.from({ length: selectFlavorQty }, (_, i) => i).map((index) => (
-                <div key={index}>
-                  <h3 className="text-xl font-semibold mt-6 mb-4">Escolha o {index + 1}º sabor</h3>
-                  <select onChange={(e) => handleFlavor(index, e.target.value)} value={selectedFlavors[index]?.id || ""} className="w-full border border-gray-300 p-2 rounded">
-                    <option value="">Selecione um sabor</option>
-                    {pizzaFlavors.filter(flavor => flavor.available).map(flavor => (
-                      <option key={flavor.id} value={flavor.id}>
-                        {flavor.name} - R$ {flavor.prices[selectedSize.id]}
-                      </option>
-                    ))}
-                  </select>
-                  {selectedFlavors[index] && (
-                    <>
-                      {/* Ingredientes do sabor */}
-                      <h4 className="text-md font-semibold mt-6 mb-4">Ingredientes do {index + 1}º sabor: <span className="font-normal">{selectedFlavors[index].name}</span></h4>
-                      <ul>
-                        {pizzaFlavors.map((flavor) => flavor.id === selectedFlavors[index]?.id && flavor.ingredients.map((ingredient) => (
-                          <div key={ingredient} className="mb-2">
-                            <input type="checkbox" checked={selectedFlavors[index]?.ingredients.includes(ingredient)} onChange={() => handleFlavorIngredients(index, ingredient)} className="mr-1" />
-                            <label className="text-md">{pizzaIngredients.find(item => item.id === ingredient)?.name}</label>
-                          </div>
-                        )))}
-                      </ul>
-                      {/* Ingredientes extras do sabor */}
-                      <h4 className="text-md font-semibold mt-6 mb-4">Ingredientes extras:</h4>
-                      <ul>
-                        {pizzaExtraIngredients.map((extraIngredient) => (
-                          <div key={extraIngredient.id} className="mb-2">
-                            <input type="checkbox" checked={!!selectedFlavors[index]?.extraIngredients.find((i) => i.id === extraIngredient.id)} onChange={() => handleFlavorExtraIngredients(index, extraIngredient.id)} className="mr-1" />
-                            <label className="text-md">{extraIngredient.name} {extraIngredient.price > 0 && `(+R$ ${extraIngredient.price})`}</label>
-                          </div>
-                        ))}
-                      </ul>
-                    </>
-                  )}
+
+                {/* Massa da pizza */}
+                <h3 className="text-xl font-semibold mt-6 mb-4">Escolha a massa da pizza</h3>
+                {pizzaDoughTypes.filter(dough => dough.available).map(dough => (
+                  <div key={dough.id} className="mb-2">
+                    <input type="radio" id={dough.id} name="pizza-dough" onChange={() => handleDough(dough)} checked={selectedDough.id === dough.id} className="mr-2" />
+                    <label htmlFor={dough.id} className="text-md">{dough.name} {dough.price > 0 && `(+R$ ${dough.price})`}</label>
+                  </div>
+                ))}
+
+                {/* Quantidade de sabores */}
+                <h3 className="text-xl font-semibold mt-6 mb-4">Escolha a quantidade de sabores</h3>
+                <select onChange={(e) => handleFlavorQty(e.target.value)} value={selectFlavorQty} className="w-full border border-gray-300 p-2 rounded">
+                  {Array.from({ length: selectedSize.maxQtyFlavors }, (_, i) => i + 1).map(qty => (
+                    <option key={qty} value={qty}>{qty} sabor{qty > 1 ? 'es' : ''}</option>
+                  ))}
+                </select>
+                
+                {/* Sabores da pizza */}
+                {Array.from({ length: selectFlavorQty }, (_, i) => i).map((index) => (
+                  <div key={index}>
+                    <h3 className="text-xl font-semibold mt-6 mb-4">Escolha o {index + 1}º sabor</h3>
+                    <select onChange={(e) => handleFlavor(index, e.target.value)} value={selectedFlavors[index]?.id || ""} className="w-full border border-gray-300 p-2 rounded">
+                      <option value="">Selecione um sabor</option>
+                      {pizzaFlavors.filter(flavor => flavor.available).map(flavor => (
+                        <option key={flavor.id} value={flavor.id}>
+                          {flavor.name} - R$ {flavor.prices[selectedSize.id]}
+                        </option>
+                      ))}
+                    </select>
+                    {selectedFlavors[index] && (
+                      <>
+                        {/* Ingredientes do sabor */}
+                        <h4 className="text-md font-semibold mt-6 mb-4">Ingredientes do {index + 1}º sabor: <span className="font-normal">{selectedFlavors[index].name}</span></h4>
+                        <ul>
+                          {pizzaFlavors.map((flavor) => flavor.id === selectedFlavors[index]?.id && flavor.ingredients.map((ingredient) => (
+                            <div key={ingredient} className="mb-2">
+                              <input type="checkbox" checked={selectedFlavors[index]?.ingredients.includes(ingredient)} onChange={() => handleFlavorIngredients(index, ingredient)} className="mr-1" />
+                              <label className="text-md">{pizzaIngredients.find(item => item.id === ingredient)?.name}</label>
+                            </div>
+                          )))}
+                        </ul>
+                        {/* Ingredientes extras do sabor */}
+                        <h4 className="text-md font-semibold mt-6 mb-4">Ingredientes extras:</h4>
+                        <ul>
+                          {pizzaExtraIngredients.map((extraIngredient) => (
+                            <div key={extraIngredient.id} className="mb-2">
+                              <input type="checkbox" checked={!!selectedFlavors[index]?.extraIngredients.find((i) => i.id === extraIngredient.id)} onChange={() => handleFlavorExtraIngredients(index, extraIngredient.id, selectFlavorQty)} className="mr-1" />
+                              <label className="text-md">{extraIngredient.name} {extraIngredient.price > 0 && `(+R$ ${extraIngredient.price / selectFlavorQty})`}</label>
+                            </div>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                  </div>
+                ))}
+
+                {/* Observações */}
+                <h3 className="text-xl font-semibold mt-6 mb-4">Observações sobre a pizza:</h3>
+                <textarea value={observations} onChange={(e) => handleObservations(e.target.value)} placeholder="Observações adicionais" className="w-full border rounded-md p-2"
+                />
+
+                {/* Adicionar pizza ao carrinho */}
+                <button onClick={() => handleAddCart({ product: null, type: "pizza" })} className="mt-6 p-2 bg-blue-500 text-white rounded">
+                  Adicionar pizza ao carrinho
+                </button>
+              </>
+            )}
+          </div>
+          <div className="pt-8">
+            <h2 className="text-2xl font-bold mb-4">Bebidas</h2>
+
+            {/* Bebidas */}
+            <h3 className="text-xl font-semibold mt-6 mb-4">Escolha uma bebida</h3>
+            {drinks.map((drink) => (
+              <div key={drink.id} className="mb-2">
+                <div className="flex items-center justify-between">
+                  <div>{drink.name} - R$ {drink.price}</div>
+
+                  {/* Adicionar ao carrinho */}
+                  <button onClick={() => handleAddCart({ product: drink, type: "product" })} className="p-2 bg-blue-500 text-white rounded">Adicionar ao carrinho</button>
+                </div>
+              </div>
+            ))}
+
+          </div>
+        </div>
+        <div className="w-1/3">
+          <h2 className="text-2xl font-bold mb-4">Carrinho de compras</h2>
+          {cart.length > 0 ? (
+            <div>
+              {console.log(cart)}
+              <h3 className="text-xl font-semibold mt-6 mb-4">Pizzas:</h3>
+              {cart.filter((product) => product.type === "pizza").length === 0 ? (
+                <p>Nenhuma pizza no carrinho</p>
+              ) : (
+                cart.filter((product) => product.type === "pizza").map((product) => (
+                  <div key={product.id} className="mb-4">
+                    <h4 className="text-md font-medium">Pizza {product.data.size.name} - {product.data.size.description}</h4>
+                    <button onClick={() => handleRemoveCart(product.id)} className="bg-red-500 text-white rounded px-2 mx-1">Remover</button>
+                    <p>Massa: {product.data.dought.name} {product.data.dought.price > 0 && (<><span className="text-red-500">(+R$ {product.data.dought.price})</span></>)}</p>
+                    <p>Borda: {product.data.crust.name} {product.data.crust.price > 0 && (<><span className="text-red-500">(+R$ {product.data.crust.price})</span></>)}</p>
+                    <p>Sabores: ({product.data.qtyFlavors})</p>
+                    <ul>
+                      {product.data.flavors.map((flavor, index) => {
+                        // Ingredientes que serão removidos: estão no sabor original, mas não no flavor.ingredients
+                        const removedIngredients = pizzaFlavors.find(pizza => pizza.name === flavor.name).ingredients
+                          .filter(ing => !flavor.ingredients.includes(ing))
+                          .map(ing => pizzaIngredients.find(i => i.id === ing)?.name) // Converte o id para o name
+                          .join(', ')
+                        console.log("removedIngredients:", removedIngredients)
+                        return (
+                          <li key={index} className="ml-4">
+                            <p className="font-medium">{flavor.name} (R$ {flavor.price})</p>
+                            <p className="text-xs">Ingredientes da receita original: {flavor.ingredients.map(ing => pizzaIngredients.find(i => i.id === ing).name).join(', ')}</p>
+                            {removedIngredients && (
+                              <p className="text-xs">Retirar da receita original: {removedIngredients}</p>
+                            )}
+                            {flavor.extraIngredients.length > 0 && (
+                              <p className="text-xs">
+                                Ingredientes extras: {flavor.extraIngredients
+                                  .map(extraIng => {
+                                    const foundIngredient = pizzaExtraIngredients.find(i => i.id === extraIng.id);
+                                    return foundIngredient ? (
+                                      <span key={extraIng.id}>
+                                        {foundIngredient.name} <span className="text-red-500">(R$ {extraIng.price})</span>
+                                      </span>
+                                    ) : null;
+                                  })
+                                  .reduce((prev, curr, index) => [prev, ', ', curr]) // Adiciona vírgulas entre os itens
+                                }
+                              </p>
+                            )}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                    <p>Preço da pizza: <span className="font-medium text-red-500">R$ {product.price}{product.data.qtyFlavors > 1 && '*'}</span></p>
+                    {product.data.observations && (<p>Observação: {product.data.observations}</p>)}
+                    {product.data.qtyFlavors > 1 && (<p className="text-xs text-red-500">* Quando a pizza tem mais de um sabor, o valor é calculado pelo sabor com o maior preço. Entretanto, o valor dos ingredientes extras é dividido pela quantidade total de sabores, e é  também somado no cálculo do preço da pizza.</p>)}
+                  </div>
+                )
+              ))}
+              <h3 className="text-xl font-semibold mt-6 mb-4">Demais produtos:</h3>
+              {cart.filter((product) => product.type !== "pizza").map((product) => (
+                <div key={product.id} className="mb-4">
+                  <h4 className="text-md font-medium">{product.data.name}</h4>
+                  <p>Quantidade:
+                    <button onClick={() => handleDecreaseItemCart(product.id)} className="bg-blue-500 text-white rounded px-2 mx-1">-</button>
+                    <span>{product.qty}</span>
+                    <button onClick={() => handleIncreaseItemCart(product.id)} className="bg-blue-500 text-white rounded px-2 mx-1">+</button>
+                    <button onClick={() => handleRemoveCart(product.id)} className="bg-red-500 text-white rounded px-2 mx-1">Remover</button>
+                  </p>
+                  <p>Preço: R$ {product.data.price}</p>
                 </div>
               ))}
-
-              {/* Observações */}
-              <h3 className="text-xl font-semibold mt-6 mb-4">Observações sobre a pizza:</h3>
-              <textarea value={observations} onChange={(e) => handleObservations(e.target.value)} placeholder="Observações adicionais" className="w-full border rounded-md p-2"
-              />
-
-              {/* Adicionar pizza ao carrinho */}
-              <button onClick={() => handleAddCart({ product: null, type: "pizza" })} className="mt-6 p-2 bg-blue-500 text-white rounded">
-                Adicionar pizza ao carrinho
-              </button>
-            </>
+              <h3 className="text-xl font-semibold mt-6 mb-4">Total a pagar: R$ {calculateTotalPrice()}</h3>
+            </div>
+          ) : (
+            <p>O carrinho de compras está vazio.</p>
           )}
         </div>
-        <div className="pt-8">
-          <h2 className="text-2xl font-bold mb-4">Bebidas</h2>
-
-          {/* Bebidas */}
-          <h3 className="text-xl font-semibold mt-6 mb-4">Escolha uma bebida</h3>
-          {drinks.map((drink) => (
-            <div key={drink.id} className="mb-2">
-              <div className="flex items-center justify-between">
-                <div>{drink.name} - R$ {drink.price}</div>
-
-                {/* Adicionar ao carrinho */}
-                <button onClick={() => handleAddCart({ product: drink, type: "product" })} className="p-2 bg-blue-500 text-white rounded">Adicionar ao carrinho</button>
-              </div>
-            </div>
-          ))}
-
+        <div className="w-1/3">
+          <h2 className="text-2xl font-bold mb-4">Informações do pedido</h2>
+          <label className="block mb-2">
+            Nome:
+            <input type="text" name="name" value={customer.name} onChange={handleCustomer} className="w-full border border-gray-300 p-2 rounded" />
+          </label>
+          <label className="block mb-2">
+            Endereço:
+            <input type="text" name="address" value={customer.address} onChange={handleCustomer} className="w-full border border-gray-300 p-2 rounded" />
+          </label>
+          <label className="block mb-2">
+            Telefone:
+            <input type="text" name="phone" value={customer.phone} onChange={handleCustomer} className="w-full border border-gray-300 p-2 rounded" />
+          </label>
+          <label className="block mb-2">
+            E-mail:
+            <input type="email" name="email" value={customer.email} onChange={handleCustomer} className="w-full border border-gray-300 p-2 rounded" />
+          </label>
+          <label className="block mb-2">
+            Forma de Pagamento:
+            <select name="paymentMethod" value={customer.paymentMethod} onChange={handlePayment} className="w-full border border-gray-300 p-2 rounded">
+              <option value="cartao">Cartão</option>
+              <option value="dinheiro">Dinheiro</option>
+            </select>
+          </label>
+          {/* Finalizar pedido */}
+          <button onClick={() => handleCheckout()} className="p-2 bg-blue-500 text-white rounded">Finalizar pedido</button>
         </div>
       </div>
-      <div className="w-1/2">
-        <h2 className="text-2xl font-bold mb-4">Carrinho de compras</h2>
-        {cart.length > 0 ? (
-          <div>
-            {console.log(cart)}
-            <h3 className="text-xl font-semibold mt-6 mb-4">Pizzas:</h3>
-            {cart.filter((product) => product.type === "pizza").length === 0 ? (
-              <p>Nenhuma pizza no carrinho</p>
-            ) : (
-              cart.filter((product) => product.type === "pizza").map((product) => (
-                <div key={product.id} className="mb-4">
-                  <h4 className="text-md font-medium">Pizza {product.data.size.name} - {product.data.size.description}</h4>
-                  <button onClick={() => handleRemoveCart(product.id)} className="bg-red-500 text-white rounded px-2 mx-1">Remover</button>
-                  <p>Massa: {product.data.dought.name} {product.data.dought.price > 0 && (<><span className="text-red-500">(+R$ {product.data.dought.price})</span></>)}</p>
-                  <p>Borda: {product.data.crust.name} {product.data.crust.price > 0 && (<><span className="text-red-500">(+R$ {product.data.crust.price})</span></>)}</p>
-                  <p>Sabores: ({product.data.qtyFlavors})</p>
-                  <ul>
-                    {product.data.flavors.map((flavor, index) => {
-                      // Ingredientes que serão removidos: estão no sabor original, mas não no flavor.ingredients
-                      const removedIngredients = pizzaFlavors.find(pizza => pizza.name === flavor.name).ingredients
-                        .filter(ing => !flavor.ingredients.includes(ing))
-                        .map(ing => pizzaIngredients.find(i => i.id === ing)?.name) // Converte o id para o name
-                        .join(', ')
-                      console.log("removedIngredients:", removedIngredients)
-                      return (
-                        <li key={index} className="ml-4">
-                          <p className="font-medium">{flavor.name} (R$ {flavor.price})</p>
-                          <p className="text-xs">Ingredientes da receita original: {flavor.ingredients.map(ing => pizzaIngredients.find(i => i.id === ing).name).join(', ')}</p>
-                          {removedIngredients && (
-                            <p className="text-xs">Retirar da receita original: {removedIngredients}</p>
-                          )}
-                          {flavor.extraIngredients.length > 0 && (
-                            <p className="text-xs">
-                              Ingredientes extras: {flavor.extraIngredients
-                                .map(extraIng => {
-                                  const foundIngredient = pizzaExtraIngredients.find(i => i.id === extraIng.id);
-                                  return foundIngredient ? (
-                                    <span key={extraIng.id}>
-                                      {foundIngredient.name} <span className="text-red-500">(R$ {extraIng.price})</span>
-                                    </span>
-                                  ) : null;
-                                })
-                                .reduce((prev, curr, index) => [prev, ', ', curr]) // Adiciona vírgulas entre os itens
-                              }
-                            </p>
-                          )}
-                        </li>
-                      )
-                    })}
-                  </ul>
-                  <p>Preço da pizza: <span className="font-medium text-red-500">R$ {product.price}{product.data.qtyFlavors > 1 && '*'}</span></p>
-                  {product.data.observations && (<p>Observação: {product.data.observations}</p>)}
-                  {product.data.qtyFlavors > 1 && (<p className="text-xs text-red-500">* Quando a pizza tem mais de um sabor, o valor é calculado pelo sabor com o maior preço. Entretanto, os ingredientes extras de cada sabor também somam no cálculo do preço da pizza.</p>)}
-                </div>
-              )
-            ))}
-            <h3 className="text-xl font-semibold mt-6 mb-4">Demais produtos:</h3>
-            {cart.filter((product) => product.type !== "pizza").map((product) => (
-              <div key={product.id} className="mb-4">
-                <h4 className="text-md font-medium">{product.data.name}</h4>
-                <p>Quantidade:
-                  <button onClick={() => handleDecreaseItemCart(product.id)} className="bg-blue-500 text-white rounded px-2 mx-1">-</button>
-                  <span>{product.qty}</span>
-                  <button onClick={() => handleIncreaseItemCart(product.id)} className="bg-blue-500 text-white rounded px-2 mx-1">+</button>
-                  <button onClick={() => handleRemoveCart(product.id)} className="bg-red-500 text-white rounded px-2 mx-1">Remover</button>
-                </p>
-                <p>Preço: R$ {product.data.price}</p>
-              </div>
-            ))}
-            <h3 className="text-xl font-semibold mt-6 mb-4">Total a pagar: R$ {calculateTotalPrice()}</h3>
-          </div>
-        ) : (
-          <p>O carrinho de compras está vazio.</p>
-        )}
-      </div>
-    </div>
+    </>
   );
 }
