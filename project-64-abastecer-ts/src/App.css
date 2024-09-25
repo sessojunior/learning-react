@@ -1,0 +1,90 @@
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: sans-serif;
+}
+
+.app {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	width: 100%;
+}
+
+.app .container {
+	max-width: 396px;
+}
+
+.app .title {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 32px;
+}
+
+.app .form {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.app label {
+	font-weight: bold;
+}
+
+.app .row {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	margin: 0 0 16px;
+}
+
+.app .row input {
+	padding: 8px 10px;
+	border: 1px solid #a1a1a1;
+	border-radius: 4px;
+	margin: 4px 0;
+	font-size: 16px;
+}
+
+.app button {
+	padding: 10px 20px;
+	border: 1px solid #a1a1a1;
+	background-color: #e9e9e9;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 16px;
+	display: inline-block;
+	margin: 0 10px;
+}
+
+.app button:hover {
+	background-color: #a0a0a0;
+	color: #fff;
+}
+
+.app .result {
+	display: block;
+	background-color: #00a83b;
+	color: #fff;
+	padding: 16px;
+	width: 100%;
+	border-radius: 8px;
+	margin-top: 16px;
+}
+
+.app .result h3,
+.app .result p {
+	padding-bottom: 8px;
+}
+
+.hidden {
+	display: none !important;
+}
