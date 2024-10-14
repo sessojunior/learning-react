@@ -1,47 +1,52 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { createBrowserRouter } from "react-router-dom"
+import { Home } from "./pages/home"
+import { Login } from "./pages/login"
+import { Register } from "./pages/register"
+import { Dashboard } from "./pages/dashboard"
+import { New } from "./pages/dashboard/new"
+import { CarDetail } from "./pages/car"
 
-import Layout from "./components/Layout"
+import { Layout } from "./components/layout"
+import { Private } from "./routes/Private"
 
-import NotFound from "./pages/NotFound"
-import Login from "./pages/Login"
-import Home from "./pages/Home"
-import Car from "./pages/Car"
-import SignUp from "./pages/SignUp"
-import Dashboard from "./pages/Dashboard"
+const router = createBrowserRouter([
+	{
+		element: <Layout />,
+		children: [
+			{
+				path: "/",
+				element: <Home />,
+			},
+			{
+				path: "/car/:id",
+				element: <CarDetail />,
+			},
+			{
+				path: "/dashboard",
+				element: (
+					<Private>
+						<Dashboard />
+					</Private>
+				),
+			},
+			{
+				path: "/dashboard/new",
+				element: (
+					<Private>
+						<New />
+					</Private>
+				),
+			},
+		],
+	},
+	{
+		path: "/login",
+		element: <Login />,
+	},
+	{
+		path: "/register",
+		element: <Register />,
+	},
+])
 
-export default function App() {
-	return (
-		<BrowserRouter>
-			<Routes>
-				<Route
-					path='/'
-					element={
-						<Layout>
-							<Home />
-						</Layout>
-					}
-				/>
-				<Route
-					path='/carro/:id'
-					element={
-						<Layout>
-							<Car />
-						</Layout>
-					}
-				/>
-				<Route path='/login' element={<Login />} />
-				<Route path='/registrar' element={<SignUp />} />
-				<Route
-					path='/dashboard'
-					element={
-						<Layout>
-							<Dashboard />
-						</Layout>
-					}
-				/>
-
-				<Route path='*' element={<NotFound />} />
-			</Routes>
-		</BrowserRouter>
-	)
-}
+export { router }
