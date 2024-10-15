@@ -100,12 +100,12 @@ export function Home() {
 
 			<h1 className='font-bold text-center mt-6 text-2xl mb-4'>Carros novos e usados em todo o Brasil</h1>
 
-			<main className='grid gird-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+			<main className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
 				{cars.map((car) => (
 					<Link key={car.id} to={`/car/${car.id}`}>
 						<section className='w-full bg-white rounded-lg'>
 							<div className='w-full h-72 rounded-lg bg-slate-200' style={{ display: loadImages.includes(car.id) ? "none" : "block" }}></div>
-							<img className='w-full rounded-lg mb-2 max-h-72 hover:scale-105 transition-all' src={car.images[0].url} alt='Carro' onLoad={() => handleImageLoad(car.id)} style={{ display: loadImages.includes(car.id) ? "block" : "none" }} />
+							<img className='w-full rounded-lg mb-2 max-h-72 object-cover hover:scale-105 transition-all' src={car.images[0].url} alt='Carro' onLoad={() => handleImageLoad(car.id)} style={{ display: loadImages.includes(car.id) ? "block" : "none" }} />
 							<p className='font-bold mt-1 mb-2 px-2'>{car.name}</p>
 
 							<div className='flex flex-col px-2'>

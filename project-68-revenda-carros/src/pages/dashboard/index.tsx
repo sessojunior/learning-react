@@ -85,7 +85,7 @@ export function Dashboard() {
 		<Container>
 			<DashboardHeader />
 
-			<main className='grid gird-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+			<main className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
 				{cars.map((car) => (
 					<section key={car.id} className='w-full bg-white rounded-lg relative'>
 						<button onClick={() => handleDeleteCar(car)} className='absolute bg-white w-14 h-14 rounded-full flex items-center justify-center right-2 top-2 drop-shadow'>
